@@ -99,6 +99,22 @@ func TestHashed_Gob(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
+//  Hashed.IsValidPassword()
+// ----------------------------------------------------------------------------
+
+func TestHash_IsValidPassword_compatibility(t *testing.T) {
+	// Hashed password generated via PHP's Argon2id function.
+	savedPasswd := "$argon2id$v=19$m=65536,t=4,p=1$VzYzcEdxUTlaQ2E3b3Y4cw$oDUmWEt4fynfBCNMDK/EL6jgJB2yuhaP2TBW1DOsOeU"
+
+	hashObj, err := DecodeHashStr(savedPasswd)
+	require.NoError(t, err)
+
+	// Validate the password against the hashed password.
+	require.True(t, hashObj.IsValidPassword([]byte("2Melon1Banana")))
+	require.False(t, hashObj.IsValidPassword([]byte("2Apple1Mango")))
+}
+
+// ----------------------------------------------------------------------------
 //  NewSalt()
 // ----------------------------------------------------------------------------
 
