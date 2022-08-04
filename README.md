@@ -3,7 +3,7 @@
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["golang.org/x/crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2).
 
 ```go
-go get "github.com/KEINOS/go-argon"
+go get "github.com/KEINOS/go-argonize"
 ```
 
 ```go
@@ -33,53 +33,26 @@ func Example() {
 }
 ```
 
-```go
-func Example_custom_params() {
-    password := []byte("my password")
+- [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
 
-    params := argonize.NewParams()
-    fmt.Println("Default iterations:", params.Iterations)
-    fmt.Println("Default key length:", params.KeyLength)
-    fmt.Println("Default memory cost:", params.MemoryCost)
-    fmt.Println("Default salt length:", params.SaltLength)
-    fmt.Println("Default parallelism:", params.Parallelism)
+## Statuses
 
-    salt, err := argonize.NewSalt(params.SaltLength)
-    if err != nil {
-        log.Fatal(err)
-    }
+[![codecov](https://codecov.io/gh/KEINOS/go-argonize/branch/main/graph/badge.svg?token=JVY7WUeUFz)](https://codecov.io/gh/KEINOS/go-argonize)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-argonize)](https://goreportcard.com/report/github.com/KEINOS/go-argonize)
 
-    salt.AddPepper([]byte("my pepper"))
+## Contributing
 
-    // Hash the password using the Argon2id algorithm with the custom parameters.
-    hashedObj := argonize.HashCustom(password, salt, params)
+[![go1.18+](https://img.shields.io/badge/Go-1.18+-blue?logo=go)](https://github.com/KEINOS/go-argonize/actions/workflows/go-versions.yml "Supported versions")
+[![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
+[![Opened Issues](https://img.shields.io/github/issues/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/issues "opened issues")
+[![PR](https://img.shields.io/github/issues-pr/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/pulls "Pull Requests")
 
-    // Validate the password against the hashed password.
-    if hashedObj.IsValidPassword([]byte("my password")) {
-        fmt.Println("the password is valid")
-    } else {
-        fmt.Println("the password is invalid")
-    }
+Any Pull-Request for improvement is welcome!
 
-    if hashedObj.IsValidPassword([]byte("wrong password")) {
-        fmt.Println("the password is valid")
-    } else {
-        fmt.Println("the password is invalid")
-    }
-
-    // Output:
-    // Default iterations: 1
-    // Default key length: 32
-    // Default memory cost: 65536
-    // Default salt length: 16
-    // Default parallelism: 2
-    // the password is valid
-    // the password is invalid
-}
-```
+- Branch to PR: `main`
 
 ## License, copyright and credits
 
-- MIT, Copyright (c) 2022 KEINOS and the go-Argonize contributors.
+- MIT, Copyright (c) 2022 [KEINOS and the go-Argonize contributors](https://github.com/KEINOS/go-argonize/graphs/contributors).
 - This Go package is strongly influenced by an article by [Alex Edwards](https://www.alexedwards.net/).
   - "[How to Hash and Verify Passwords With Argon2 in Go](https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go)"

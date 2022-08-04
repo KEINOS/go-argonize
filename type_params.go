@@ -26,15 +26,15 @@ type Params struct {
 }
 
 const (
-	// IterationsDefault is the default number of ArgonIterations.
+	// IterationsDefault is the default number of iterations of the parameter used by the Argon2id algorithm.
 	IterationsDefault = uint32(1)
-	// KeyLengthDefault is the default length of ArgonKeyLength.
+	// KeyLengthDefault is the default key length used in the Argon2id algorithm parameters.
 	KeyLengthDefault = uint32(32)
-	// MemoryCostDefault is the default amount of ArgonMemoryCost.
+	// MemoryCostDefault is the default amount of memory (KiB) used by the algorithm parameters.
 	MemoryCostDefault = uint32(64 * 1024)
-	// ParallelismDefault is the default number of ArgonParallelism.
+	// ParallelismDefault is the default number of threads used in the algorithm parameters.
 	ParallelismDefault = uint8(2)
-	// SaltLengthDefault is the default length of ArgonSaltLength.
+	// SaltLengthDefault is the default length of the salt used in the Argon2id algorithm parameters.
 	SaltLengthDefault = uint32(16)
 )
 

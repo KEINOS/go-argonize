@@ -2,8 +2,9 @@
 Package argonize is a wrapper for the functions of the "golang.org/x/crypto/argon2"
 package to facilitate the use of the Argon2id password hashing algorithm.
 
-- This package is strongly influenced by an article by [Alex Edwards](https://www.alexedwards.net/).
-  - "[How to Hash and Verify Passwords With Argon2 in Go](https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go)"
+* This package is strongly influenced by an article by Alex Edwards (https://www.alexedwards.net/).
+  * "How to Hash and Verify Passwords With Argon2 in Go"
+  * https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go
 
 */
 package argonize
