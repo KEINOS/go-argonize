@@ -79,6 +79,16 @@ services:
     volumes:
       - ..:/workspaces
       - GO_PKG_MOD:/go/pkg/mod
+  # Service v1_19 runs the tests on Go v1.19
+  v1_19:
+    build:
+      context: ..
+      dockerfile: ./.github/Dockerfile
+      args:
+        VARIANT: 1.19-alpine
+    volumes:
+      - ..:/workspaces
+      - GO_PKG_MOD:/go/pkg/mod
   # Service latest runs the tests on latest Go docker image
   latest:
     build:

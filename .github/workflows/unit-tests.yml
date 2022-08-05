@@ -27,8 +27,9 @@ jobs:
         # Udate the hash if Dockerfile/go.mod is changed or the month has changed.
         with:
           path: |
-            ./.github/Dockerfile
             ./go.mod
+            ./.github/Dockerfile
+            ./.github/docker-compose.yml
           variant: $(TZ=UTC-9 date '+%Y%m')
 
       - name: Enable Cache
@@ -46,6 +47,7 @@ jobs:
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_18_1.tar
+          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_19_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_latest_1.tar
 
       - name: Pull base images if no-cache
@@ -57,6 +59,7 @@ jobs:
           docker pull golang:1.16-alpine
           docker pull golang:1.17-alpine
           docker pull golang:1.18-alpine
+          docker pull golang:1.19-alpine
           docker pull golang:alpine
 
       - name: Build Docker images if no-cache
@@ -85,6 +88,7 @@ jobs:
         run: docker-compose --file ./.github/docker-compose.yml run v1_17
       - name: Run tests on Go 1.18
         run: docker-compose --file ./.github/docker-compose.yml run v1_18
+      - name: Run tests on Go 1.19
+        run: docker-compose --file ./.github/docker-compose.yml run v1_19
       - name: Run tests on latest Go
-        # Currently it is equivalent to Go 1.18 but ensures that the latest Go is used.
         run: docker-compose --file ./.github/docker-compose.yml run latest
