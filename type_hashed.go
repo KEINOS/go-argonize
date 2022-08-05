@@ -16,7 +16,7 @@ import (
 //  Type: Hashed
 // ----------------------------------------------------------------------------
 
-// HashedX holds the Argon2id hash value and its parameters.
+// Hashed holds the Argon2id hash value and its parameters.
 type Hashed struct {
 	Params *Params
 	Salt   Salt
@@ -27,11 +27,13 @@ type Hashed struct {
 //  Constructors
 // ----------------------------------------------------------------------------
 
+const lenDecChunks = 6 // Number of chunks in the encoded hash string.
+
 // DecodeHashStr decodes an Argon2id formatted hash string into a Hashed object.
 // Which is the value returned by Hashed.String() method.
 func DecodeHashStr(encodedHash string) (*Hashed, error) {
 	vals := strings.Split(encodedHash, "$")
-	if len(vals) != 6 {
+	if len(vals) != lenDecChunks {
 		return nil, errors.New("invalid hash format")
 	}
 
@@ -45,15 +47,12 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 		return nil, errors.New("incompatible version of Argon2")
 	}
 
-	p := NewParams()
+	params := NewParams()
 
-	_, err := fmt.Sscanf(
-		vals[3],
+	if _, err := fmt.Sscanf(vals[3],
 		"m=%d,t=%d,p=%d",
-		&p.MemoryCost, &p.Iterations, &p.Parallelism,
-	)
-
-	if err != nil {
+		&params.MemoryCost, &params.Iterations, &params.Parallelism,
+	); err != nil {
 		return nil, errors.Wrap(err, "missing parameters in the hash")
 	}
 
@@ -61,22 +60,23 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode salt value")
 	}
-	p.SaltLength = uint32(len(salt))
+
+	params.SaltLength = uint32(len(salt))
 
 	hash, err := base64.RawStdEncoding.Strict().DecodeString(vals[5])
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode hash value")
 	}
 
-	p.KeyLength = uint32(len(hash))
+	params.KeyLength = uint32(len(hash))
 
-	h := &Hashed{
-		Params: p,
+	hashedObj := &Hashed{
+		Params: params,
 		Salt:   Salt(salt),
 		Hash:   hash,
 	}
 
-	return h, nil
+	return hashedObj, nil
 }
 
 // DecodeHashGob decodes gob-encoded strings into Hashed objects.
@@ -86,12 +86,13 @@ func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 	dec := gob.NewDecoder(bytes.NewReader(gobEncHash))
 
 	// Prepare the variable to store the decoded value.
-	var h Hashed
+	var hashedObj Hashed
 
-	if err := dec.Decode(&h); err != nil {
+	if err := dec.Decode(&hashedObj); err != nil {
 		return nil, errors.Wrap(err, "failed to gob decode the hash")
 	}
-	return &h, nil
+
+	return &hashedObj, nil
 }
 
 // ----------------------------------------------------------------------------
