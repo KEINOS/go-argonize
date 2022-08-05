@@ -131,9 +131,8 @@ func TestHash_IsValidPassword_compatibility(t *testing.T) {
 //  NewSalt()
 // ----------------------------------------------------------------------------
 
+//nolint:paralleltest // disable parallel since it temporarily changes the RandRead function
 func TestNewSalt(t *testing.T) {
-	t.Parallel()
-
 	// Backup and defer restore the random reader.
 	oldRandRead := argonize.RandRead
 	defer func() { argonize.RandRead = oldRandRead }()
