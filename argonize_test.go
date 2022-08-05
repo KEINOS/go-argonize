@@ -1,8 +1,9 @@
-package argonize
+package argonize_test
 
 import (
 	"testing"
 
+	"github.com/KEINOS/go-argonize"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )
@@ -12,7 +13,9 @@ import (
 // ----------------------------------------------------------------------------
 
 func TestDecodeHashGob(t *testing.T) {
-	hashedObj, err := DecodeHashGob(nil)
+	t.Parallel()
+
+	hashedObj, err := argonize.DecodeHashGob(nil)
 
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "failed to gob decode the hash")
@@ -23,8 +26,10 @@ func TestDecodeHashGob(t *testing.T) {
 //  DecodeHashStr()
 // ----------------------------------------------------------------------------
 
-// DecodeHashStrBadCase is a list of test cases for DecodeHashStr().
-var DecodeHashStrBadCase = []struct {
+// The _DecodeHashStrBadCase is a list of test cases for DecodeHashStr().
+//
+//nolint:gochecknoglobals
+var _DecodeHashStrBadCase = []struct {
 	encodedHash string
 	msgContain  string
 	errMsg      string
@@ -62,8 +67,10 @@ var DecodeHashStrBadCase = []struct {
 }
 
 func TestDecodeHashStr(t *testing.T) {
-	for _, tt := range DecodeHashStrBadCase {
-		hashedObj, err := DecodeHashStr(tt.encodedHash)
+	t.Parallel()
+
+	for _, tt := range _DecodeHashStrBadCase {
+		hashedObj, err := argonize.DecodeHashStr(tt.encodedHash)
 
 		require.Error(t, err, tt.errMsg)
 		require.Contains(t, err.Error(), tt.msgContain, tt.errMsg)
@@ -76,7 +83,9 @@ func TestDecodeHashStr(t *testing.T) {
 // ----------------------------------------------------------------------------
 
 func TestHash(t *testing.T) {
-	hashedObj, err := Hash(nil)
+	t.Parallel()
+
+	hashedObj, err := argonize.Hash(nil)
 
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "failed to hash the password")
@@ -89,8 +98,9 @@ func TestHash(t *testing.T) {
 // ----------------------------------------------------------------------------
 
 func TestHashed_Gob(t *testing.T) {
-	hashed := Hashed{}
+	t.Parallel()
 
+	hashed := new(argonize.Hashed)
 	b, err := hashed.Gob()
 
 	require.Error(t, err)
@@ -103,10 +113,13 @@ func TestHashed_Gob(t *testing.T) {
 // ----------------------------------------------------------------------------
 
 func TestHash_IsValidPassword_compatibility(t *testing.T) {
+	t.Parallel()
+
 	// Hashed password generated via PHP's Argon2id function.
+	//nolint:gosec // hardcoded credentials as an example
 	savedPasswd := "$argon2id$v=19$m=65536,t=4,p=1$VzYzcEdxUTlaQ2E3b3Y4cw$oDUmWEt4fynfBCNMDK/EL6jgJB2yuhaP2TBW1DOsOeU"
 
-	hashObj, err := DecodeHashStr(savedPasswd)
+	hashObj, err := argonize.DecodeHashStr(savedPasswd)
 	require.NoError(t, err)
 
 	// Validate the password against the hashed password.
@@ -119,15 +132,17 @@ func TestHash_IsValidPassword_compatibility(t *testing.T) {
 // ----------------------------------------------------------------------------
 
 func TestNewSalt(t *testing.T) {
-	// Backup and defer restore the random reader.
-	oldRandRead := RandRead
-	defer func() { RandRead = oldRandRead }()
+	t.Parallel()
 
-	RandRead = func(b []byte) (n int, err error) {
+	// Backup and defer restore the random reader.
+	oldRandRead := argonize.RandRead
+	defer func() { argonize.RandRead = oldRandRead }()
+
+	argonize.RandRead = func(b []byte) (int, error) {
 		return 0, errors.New("forced error")
 	}
 
-	salt, err := NewSalt(16)
+	salt, err := argonize.NewSalt(16)
 
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "failed to generate salt",

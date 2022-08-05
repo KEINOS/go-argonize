@@ -90,6 +90,7 @@ func Example_custom_params() {
 
 func Example_from_saved_password() {
 	// Load the hashed password from a file, DB or etc.
+	//nolint:gosec // hardcoded credentials as an example
 	savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
 
 	// Decode the saved password to a Hashed object.
@@ -226,6 +227,7 @@ func ExampleNewParams() {
 //  RandomBytes()
 // ----------------------------------------------------------------------------
 
+//nolint:varnamelen // r1, r2 are short function name but leave as is here.
 func ExampleRandomBytes() {
 	r1, err := argonize.RandomBytes(32)
 	if err != nil {

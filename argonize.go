@@ -3,9 +3,8 @@ Package argonize is a wrapper for the functions of the "golang.org/x/crypto/argo
 package to facilitate the use of the Argon2id password hashing algorithm.
 
 * This package is strongly influenced by an article by Alex Edwards (https://www.alexedwards.net/).
-  * "How to Hash and Verify Passwords With Argon2 in Go"
-  * https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go
-
+  - "How to Hash and Verify Passwords With Argon2 in Go"
+  - https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go
 */
 package argonize
 
@@ -21,6 +20,8 @@ import (
 // ----------------------------------------------------------------------------
 
 // RandRead is a copy of rand.Read to ease testing.
+//
+//nolint:gochecknoglobals // export for test convenience
 var RandRead = rand.Read
 
 // ----------------------------------------------------------------------------
@@ -69,11 +70,11 @@ func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
 
 // RandomBytes returns securely generated random bytes with the given length.
 func RandomBytes(lenOut uint32) ([]byte, error) {
-	b := make([]byte, lenOut)
+	bytesOut := make([]byte, lenOut)
 
-	if _, err := RandRead(b); err != nil {
+	if _, err := RandRead(bytesOut); err != nil {
 		return nil, errors.Wrap(err, "failed to read random bytes")
 	}
 
-	return b, nil
+	return bytesOut, nil
 }

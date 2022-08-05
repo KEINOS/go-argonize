@@ -5,7 +5,7 @@
 #
 # Since the service `tidy` will update/re-write the "go.mod" file to the latest
 # version, during it's process the "go.mod" file will be gone temporarily. Thus,
-# it will cause failure in the other container becaue of missing "go.mod" file.
+# it will cause failure in the other container because of missing "go.mod" file.
 #
 # - Recommended usage:
 #     $ docker-compose --file ./.github/docker-compose.yml run v1_14
