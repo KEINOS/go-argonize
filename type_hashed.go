@@ -79,7 +79,7 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 	return hashedObj, nil
 }
 
-// DecodeHashGob decodes gob-encoded strings into Hashed objects.
+// DecodeHashGob decodes gob-encoded byte slice into a Hashed object.
 // The argument should be the value from Hashed.Gob() method.
 func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 	// Create a decoder and receive a value.
@@ -99,7 +99,7 @@ func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 //  Methods
 // ----------------------------------------------------------------------------
 
-// Gob returns the gob encoded byte slice of the current Hashed object.
+// Gob returns the gob-encoded byte slice of the current Hashed object.
 // This is useful when hashes are stored in the database in bytes.
 func (h Hashed) Gob() ([]byte, error) {
 	var network bytes.Buffer // Stand-in for the network.
@@ -119,6 +119,8 @@ func (h Hashed) Gob() ([]byte, error) {
 }
 
 // IsValidPassword returns true if the given password is valid.
+//
+// Note that the parameters must be the same as those used to generate the hash.
 func (h *Hashed) IsValidPassword(password []byte) bool {
 	// The same parameters are used to derive the key from the other password.
 	otherHash := argon2.IDKey(

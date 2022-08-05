@@ -1,7 +1,7 @@
 <!-- markdownlint-disable-file MD041 -->
 # go-argonize
 
-[![go1.14+](https://img.shields.io/badge/Go-1.14+-blue?logo=go)](https://github.com/KEINOS/go-argonize/actions/workflows/go-versions.yml "Supported versions")
+[![go1.14+](https://img.shields.io/badge/Go-1.14+-blue?logo=go)](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml#L81 "Supported versions")
 [![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
 
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2).
@@ -41,7 +41,7 @@ func Example() {
 
 ## Statuses
 
-[![go1.14+](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml "Unit tests on various Go versions")
+[![UnitTests](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml)
 [![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml)
 [![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml)
 [![PlatformTests](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml "Tests on Win, macOS and Linux")
@@ -51,7 +51,7 @@ func Example() {
 
 ## Contributing
 
-[![go1.14+](https://img.shields.io/badge/Go-1.14+-blue?logo=go)](https://github.com/KEINOS/go-argonize/actions/workflows/go-versions.yml "Supported versions")
+[![go1.14+](https://img.shields.io/badge/Go-1.14+-blue?logo=go)](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml#L81 "Supported versions")
 [![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
 [![Opened Issues](https://img.shields.io/github/issues/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/issues "opened issues")
 [![PR](https://img.shields.io/github/issues-pr/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/pulls "Pull Requests")
@@ -59,6 +59,8 @@ func Example() {
 Any Pull-Request for improvement is welcome!
 
 - Branch to PR: `main`
+- [CIs](https://github.com/KEINOS/go-argonize/actions) on PR/Push: `unit-tests` `golangci-lint` `codeQL-analysis` `platform-tests`
+- [Security policy](https://github.com/KEINOS/go-argonize/security/policy)
 
 ## License, copyright and credits
 

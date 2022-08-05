@@ -1,7 +1,7 @@
 # Unit testing on vaious Go versions, such as Go 1.14 and later.
 #
 # This workflow caches images built with Docker and docker-compose to speed up its execution.
-name: go1.14+
+name: UnitTests
 
 on:
   workflow_dispatch:
@@ -30,6 +30,7 @@ jobs:
             ./go.mod
             ./.github/Dockerfile
             ./.github/docker-compose.yml
+            ./.github/workflows/unit-tests.yml
           variant: $(TZ=UTC-9 date '+%Y%m')
 
       - name: Enable Cache
@@ -76,6 +77,7 @@ jobs:
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar github_v1_16:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar github_v1_17:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_18_1.tar github_v1_18:latest
+          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_19_1.tar github_v1_19:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_latest_1.tar github_latest:latest
 
       - name: Run tests on Go 1.14
