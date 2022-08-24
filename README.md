@@ -19,6 +19,8 @@ func Example() {
         log.Fatal(err)
     }
 
+    fmt.Println("Passwd to save:", hashedObj.String())
+
     if hashedObj.IsValidPassword([]byte("my password")) {
         fmt.Println("the password is valid")
     } else {
@@ -32,6 +34,7 @@ func Example() {
     }
 
     // Output:
+    // Passwd to save: $argon2id$v=19$m=65536,t=1,p=2$ek6ZYdlRm2D5AsGV98TWKA$QAIDZEdIgwohrNX678mHc448LOmD7jGR4BGw/9YMMVU
     // the password is valid
     // the password is invalid
 }
