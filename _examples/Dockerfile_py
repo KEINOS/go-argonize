@@ -1,0 +1,44 @@
+# -----------------------------------------------------------------------------
+#  Build Stage (Go)
+# -----------------------------------------------------------------------------
+FROM golang:alpine AS build
+
+RUN apk add --no-cache \
+    git \
+    alpine-sdk \
+    build-base
+
+COPY . /workspaces
+
+WORKDIR /workspaces/_examples
+
+RUN \
+    go mod init sample && \
+    go mod tidy && \
+    go install \
+      -ldflags="-s -w -extldflags \"-static\"" \
+      .
+
+# -----------------------------------------------------------------------------
+#  Main Stage (Python3)
+# -----------------------------------------------------------------------------
+FROM python:alpine
+
+WORKDIR /workspaces
+
+COPY --from=build /go/bin/sample /usr/local/bin/sample
+
+RUN \
+    # Create a group and user
+    addgroup -S pygroup && \
+    adduser -S pyuser -G pygroup -h /home/pyuser
+
+USER pyuser
+
+RUN \
+    # Upgrade php
+    python3 -m pip install --upgrade pip && \
+    # Install dependencies
+    python3 -m pip install passlib argon2-cffi
+
+ENTRYPOINT python3 /workspaces/main.py
