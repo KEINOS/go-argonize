@@ -99,3 +99,21 @@ services:
     volumes:
       - ..:/workspaces
       - GO_PKG_MOD:/go/pkg/mod
+  # Compatibility test with PHP
+  php:
+    build:
+      context: ..
+      dockerfile: ./_examples/Dockerfile_php
+      args:
+        VARIANT: alpine
+    volumes:
+      - ../_examples/main.php:/workspaces/main.php
+  # Compatibility test with Python3
+  python:
+    build:
+      context: ..
+      dockerfile: ./_examples/Dockerfile_py
+      args:
+        VARIANT: alpine
+    volumes:
+      - ../_examples/main.py:/workspaces/main.py
