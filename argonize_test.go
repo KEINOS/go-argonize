@@ -150,3 +150,16 @@ func TestNewSalt(t *testing.T) {
 		"it should contain the cause of the error")
 	require.Zero(t, salt, "it should be zero on error")
 }
+
+// ----------------------------------------------------------------------------
+//  RandomBytes()
+// ----------------------------------------------------------------------------
+
+func TestRandomBytes_zero_length_arg(t *testing.T) {
+	t.Parallel()
+
+	randVal, err := argonize.RandomBytes(0)
+
+	require.NoError(t, err, "zero length should not return an error")
+	require.Empty(t, randVal, "zero length should return an empty slice")
+}
