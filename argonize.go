@@ -19,7 +19,9 @@ import (
 //  Public Variables
 // ----------------------------------------------------------------------------
 
-// RandRead is a copy of rand.Read to ease testing.
+// RandRead is a copy of `crypto.rand.Read` to ease testing.
+// It is a helper function that calls Reader.Read using io.ReadFull.
+// On return, n == len(b) if and only if err == nil.
 //
 //nolint:gochecknoglobals // export for test convenience
 var RandRead = rand.Read
@@ -68,7 +70,13 @@ func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
 	}
 }
 
-// RandomBytes returns securely generated random bytes with the given length.
+// RandomBytes returns a random number of byte slice with the given length.
+// It is a cryptographically secure random number generated from `crypto.rand`
+// package.
+//
+// If it is determined that a cryptographically secure number cannot be generated,
+// an error is returned. Also note that if lenOut is zero, an empty byte slice
+// is returned with no error.
 func RandomBytes(lenOut uint32) ([]byte, error) {
 	bytesOut := make([]byte, lenOut)
 

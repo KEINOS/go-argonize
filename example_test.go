@@ -229,16 +229,19 @@ func ExampleNewParams() {
 
 //nolint:varnamelen // r1, r2 are short function name but leave as is here.
 func ExampleRandomBytes() {
+	// Generate 32 byte length random value.
 	r1, err := argonize.RandomBytes(32)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Generate 32 byte length random value.
 	r2, err := argonize.RandomBytes(32)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Require that the two random values are different.
 	if bytes.Equal(r1, r2) {
 		log.Fatal("random bytes are not random")
 	}
@@ -253,6 +256,7 @@ func ExampleRandomBytes() {
 // ----------------------------------------------------------------------------
 
 func ExampleSalt_AddPepper() {
+	// Create 16 byte length random salt.
 	salt, err := argonize.NewSalt(16)
 	if err != nil {
 		log.Fatal(err)
@@ -264,6 +268,7 @@ func ExampleSalt_AddPepper() {
 
 	withPepper := salt[:]
 
+	// Require peppered salt to be different from the original salt.
 	if bytes.Equal(noPepper, withPepper) {
 		log.Fatal("salt and salt+pepper values should be different")
 	}
