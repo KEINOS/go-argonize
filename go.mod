@@ -5,5 +5,5 @@ go 1.14
 require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
+	golang.org/x/crypto v0.0.0-20220924013350-4ba4fb4dd9e7
 )
