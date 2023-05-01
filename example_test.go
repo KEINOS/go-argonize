@@ -161,6 +161,39 @@ func Example_gob_encode_and_decode() {
 	// the password is invalid
 }
 
+// Example_static_output demonstrates how to obtain a static output from the
+// Argon2 algorithm for testing purposes.
+//
+// Note that it is not recommended to use the static output as a password hash.
+func Example_static_output() {
+	// Backup and defer restoring the random reader.
+	oldRandRead := argonize.RandRead
+	defer func() {
+		argonize.RandRead = oldRandRead
+	}()
+
+	// Set/mock the random reader function as a static reader.
+	//
+	// Note that it is not recommended to use the static output as a password
+	// hash. The static output is only useful for testing purposes.
+	argonize.RandRead = func(b []byte) (int, error) {
+		return copy(b, []byte("0123456789abcdef")), nil
+	}
+
+	pwd := "my very strong password"
+
+	hashedObj, err := argonize.Hash([]byte(pwd))
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println("String:", hashedObj.String())
+	fmt.Printf("Hashed: %x\n", hashedObj.Hash)
+	// Output:
+	// String: $argon2id$v=19$m=65536,t=1,p=2$MDEyMzQ1Njc4OWFiY2RlZg$ytVHh/XAyQmzALFYvBRKET/7GswiVnDdubchuBeU/Yw
+	// Hashed: cad54787f5c0c909b300b158bc144a113ffb1acc225670ddb9b721b81794fd8c
+}
+
 // ----------------------------------------------------------------------------
 //  DecodeHashStr()
 // ----------------------------------------------------------------------------
