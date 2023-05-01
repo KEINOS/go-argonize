@@ -33,12 +33,14 @@ output:
 linters:
   enable-all: true
   disable:
-  # Temporary disabling. See: https://github.com/sivchari/nosnakecase/issues/9
-  - nosnakecase
-  # Deprecated linters
+  # Disable deprecated linters
   - exhaustivestruct
   - golint
   - ifshort
   - interfacer
   - maligned
   - scopelint
+  - structcheck
+  - varcheck
+  - deadcode
+  - nosnakecase
