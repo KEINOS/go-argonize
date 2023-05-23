@@ -31,6 +31,9 @@ const lenDecChunks = 6 // Number of chunks in the encoded hash string.
 
 // DecodeHashStr decodes an Argon2id formatted hash string into a Hashed object.
 // Which is the value returned by Hashed.String() method.
+//
+// Note that the password remains hashed even if the object is decoded. Once hashed,
+// the original password cannot be recovered in any case.
 func DecodeHashStr(encodedHash string) (*Hashed, error) {
 	vals := strings.Split(encodedHash, "$")
 	if len(vals) != lenDecChunks {
@@ -81,6 +84,9 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 
 // DecodeHashGob decodes gob-encoded byte slice into a Hashed object.
 // The argument should be the value from Hashed.Gob() method.
+//
+// Note that the password remains hashed even if the object is decoded. Once hashed,
+// the original password cannot be recovered in any case.
 func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 	// Create a decoder and receive a value.
 	dec := gob.NewDecoder(bytes.NewReader(gobEncHash))
