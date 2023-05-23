@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Update go.mod and go.sum on Go 1.14 env
+      - name: Update go.mod and go.sum on Go 1.18 env
         run: |
           set -eu
           docker-compose --file ./.github/docker-compose.yml run tidy
@@ -45,6 +45,6 @@ jobs:
           docker-compose --file ./.github/docker-compose.yml run latest
 
       - name: Create Pull Request on Change
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
             token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

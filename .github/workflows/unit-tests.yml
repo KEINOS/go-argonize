@@ -1,4 +1,4 @@
-# Unit testing on vaious Go versions, such as Go 1.14 and later.
+# Unit testing on vaious Go versions, such as Go 1.18 and later.
 # It will test the generated password hash verifying with PHP and Python.
 #
 # This workflow caches images built with Docker and docker-compose to speed up its execution.
@@ -36,7 +36,7 @@ jobs:
 
       - name: Enable Cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.PATH_CACHE }}
           key: ${{ steps.imagetag.outputs.hash }}
@@ -44,10 +44,11 @@ jobs:
       - name: Load cached Docker images if any
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_14_1.tar
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_15_1.tar
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar
+          : # Drop uncompatible old versions (issue #25)
+          : # docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_14_1.tar
+          : # docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_15_1.tar
+          : # docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar
+          : # docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_18_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_19_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_latest_1.tar
@@ -57,11 +58,12 @@ jobs:
       - name: Pull base images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          : # Drop uncompatible old versions (issue #25)
+          : # docker pull golang:1.14-alpine
+          : # docker pull golang:1.15-alpine
+          : # docker pull golang:1.16-alpine
+          : # docker pull golang:1.17-alpine
           : # Pull images one-by-one for stability
-          docker pull golang:1.14-alpine
-          docker pull golang:1.15-alpine
-          docker pull golang:1.16-alpine
-          docker pull golang:1.17-alpine
           docker pull golang:1.18-alpine
           docker pull golang:1.19-alpine
           docker pull golang:alpine
@@ -77,24 +79,27 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_14_1.tar github_v1_14:latest
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_15_1.tar github_v1_15:latest
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar github_v1_16:latest
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar github_v1_17:latest
+          : # Drop uncompatible old versions (issue #25)
+          : # docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_14_1.tar github_v1_14:latest
+          : # docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_15_1.tar github_v1_15:latest
+          : # docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_16_1.tar github_v1_16:latest
+          : # docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_17_1.tar github_v1_17:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_18_1.tar github_v1_18:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_19_1.tar github_v1_19:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_latest_1.tar github_latest:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_php_1.tar github_php:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_python_1.tar github_python:latest
 
-      - name: Run tests on Go 1.14
-        run: docker-compose --file ./.github/docker-compose.yml run v1_14
-      - name: Run tests on Go 1.15
-        run: docker-compose --file ./.github/docker-compose.yml run v1_15
-      - name: Run tests on Go 1.16
-        run: docker-compose --file ./.github/docker-compose.yml run v1_16
-      - name: Run tests on Go 1.17
-        run: docker-compose --file ./.github/docker-compose.yml run v1_17
+      # Drop uncompatible old versions (issue #25)
+      # - name: Run tests on Go 1.14
+      #   run: docker-compose --file ./.github/docker-compose.yml run v1_14
+      # - name: Run tests on Go 1.15
+      #   run: docker-compose --file ./.github/docker-compose.yml run v1_15
+      # - name: Run tests on Go 1.16
+      #   run: docker-compose --file ./.github/docker-compose.yml run v1_16
+      # - name: Run tests on Go 1.17
+      #   run: docker-compose --file ./.github/docker-compose.yml run v1_17
+
       - name: Run tests on Go 1.18
         run: docker-compose --file ./.github/docker-compose.yml run v1_18
       - name: Run tests on Go 1.19
