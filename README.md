@@ -12,26 +12,26 @@ go get "github.com/KEINOS/go-argonize"
 
 ```go
 func Example() {
-    # Your strong and unpredictable password
+    // Your strong and unpredictable password
     password := []byte("my password")
 
-    # Password hash your password
+    // Password hash your password
     hashedObj, err := argonize.Hash(password)
     if err != nil {
         log.Fatal(err)
     }
 
-    # View the hashed password
+    // View the hashed password
     fmt.Println("Passwd to save:", hashedObj.String())
 
-    # Verify password (golden case)
+    // Verify password (golden case)
     if hashedObj.IsValidPassword([]byte("my password")) {
         fmt.Println("the password is valid")
     } else {
         fmt.Println("the password is invalid")
     }
 
-    # Verify password (wrong case)
+    // Verify password (wrong case)
     if hashedObj.IsValidPassword([]byte("wrong password")) {
         fmt.Println("the password is valid")
     } else {
