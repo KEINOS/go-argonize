@@ -44,3 +44,16 @@ linters:
   - varcheck
   - deadcode
   - nosnakecase
+linters-settings:
+  depguard:
+    rules:
+      main:
+        # List of allowed packages.
+        allow:
+          # Go standard library
+          - $gostd
+          # Required for testing
+          - github.com/KEINOS/go-argonize
+          - github.com/stretchr/testify
+          # Deprecated but still used for simple error handling
+          - github.com/pkg/errors
