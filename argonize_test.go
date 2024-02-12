@@ -137,7 +137,7 @@ func TestNewSalt(t *testing.T) {
 	oldRandRead := argonize.RandRead
 	defer func() { argonize.RandRead = oldRandRead }()
 
-	argonize.RandRead = func(b []byte) (int, error) {
+	argonize.RandRead = func(_ []byte) (int, error) {
 		return 0, errors.New("forced error")
 	}
 
