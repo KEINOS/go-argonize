@@ -54,6 +54,10 @@ func Hash(password []byte) (*Hashed, error) {
 //
 // Similar to the Hash() function, but allows you to specify the algorithm parameters.
 func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
+	if salt == nil {
+		salt, _ = NewSalt(parameters.SaltLength)
+	}
+
 	hashedPass := argon2.IDKey(
 		password,
 		salt,

@@ -94,6 +94,40 @@ func TestHash(t *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
+//  HashCustom()
+// ----------------------------------------------------------------------------
+
+// Fix issue #46: use random value for salt if salt is nil.
+func TestHashCustom_fix_issue46(t *testing.T) {
+	t.Parallel()
+
+	t.Run("salt is consistent", func(t *testing.T) {
+		t.Parallel()
+
+		salt := []byte("salt")
+		params := argonize.NewParams()
+
+		hashedObj1 := argonize.HashCustom([]byte("password"), salt, params)
+		hashedObj2 := argonize.HashCustom([]byte("password"), salt, params)
+
+		require.Equal(t, hashedObj1.String(), hashedObj2.String(),
+			"the hash should be consistent with the same salt")
+	})
+
+	t.Run("salt is nil", func(t *testing.T) {
+		t.Parallel()
+
+		params := argonize.NewParams()
+
+		hashedObj1 := argonize.HashCustom([]byte("password"), nil, params)
+		hashedObj2 := argonize.HashCustom([]byte("password"), nil, params)
+
+		require.NotEqual(t, hashedObj1.String(), hashedObj2.String(),
+			"it should not be consistent with nil salt")
+	})
+}
+
+// ----------------------------------------------------------------------------
 //  Hashed.Gob()
 // ----------------------------------------------------------------------------
 
