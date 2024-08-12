@@ -31,20 +31,20 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update go.mod and go.sum on Go 1.18 env
         run: |
           set -eu
-          docker-compose --file ./.github/docker-compose.yml run tidy
+          docker compose --file ./.github/docker-compose.yml run tidy
 
       - name: Run tests in all Go versions
         # Test only the latest version of Go. Since on PR, the CIs will run on all Go versions.
         run: |
           set -eu
-          docker-compose --file ./.github/docker-compose.yml run latest
+          docker compose --file ./.github/docker-compose.yml run latest
 
       - name: Create Pull Request on Change
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
             token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
