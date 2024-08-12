@@ -44,8 +44,7 @@ jobs:
       - name: Load cached Docker images if any
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_v1_18_1.tar
-          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-v1_19_1.tar
+          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github_min_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-latest_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar
@@ -53,9 +52,11 @@ jobs:
       - name: Pull base images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          : # Pull minimum supported Go version
           docker pull golang:1.18-alpine
-          docker pull golang:1.19-alpine
+          : # Pull latest Go version
           docker pull golang:alpine
+          : # Pull latest PHP and Python images
           docker pull php:alpine
           docker pull python:alpine
 
@@ -68,16 +69,13 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-v1_18_1.tar github-v1_18:latest
-          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-v1_19_1.tar github-v1_19:latest
+          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-min_1.tar github-min:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-latest_1.tar github-latest:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar github-php:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar github-python:latest
 
-      - name: Run tests on Go 1.18
-        run: docker compose --file ./.github/docker-compose.yml run v1_18
-      - name: Run tests on Go 1.19
-        run: docker compose --file ./.github/docker-compose.yml run v1_19
+      - name: Run tests on minimum supported Go version
+        run: docker compose --file ./.github/docker-compose.yml run min
       - name: Run tests on latest Go
         run: docker compose --file ./.github/docker-compose.yml run latest
       - name: Compatibility test on PHP
