@@ -1,5 +1,5 @@
 # =============================================================================
-# Docker Compose file for testing on Go versions 1.18 to the latest.
+# Docker Compose file for testing on Go versions 1.22 to the latest.
 # =============================================================================
 # It is recommended to run specifying a specific Go version and not at once.
 #
@@ -24,7 +24,7 @@ services:
       context: ..
       dockerfile: ./.github/Dockerfile
       args:
-        VARIANT: 1.18-alpine
+        VARIANT: 1.22-alpine
     volumes:
       - ..:/workspaces
     entrypoint: [ "./.github/run_go_mod_tidy.sh" ]
@@ -34,7 +34,7 @@ services:
       context: ..
       dockerfile: ./.github/Dockerfile
       args:
-        VARIANT: 1.18-alpine
+        VARIANT: 1.22-alpine
     volumes:
       - ..:/workspaces
       - GO_PKG_MOD:/go/pkg/mod
