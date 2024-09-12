@@ -27,7 +27,10 @@ type Hashed struct {
 //  Constructors
 // ----------------------------------------------------------------------------
 
-const lenDecChunks = 6 // Number of chunks in the encoded hash string.
+const (
+	maxInt32     = 2147483647
+	lenDecChunks = 6 // Number of chunks in the encoded hash string.
+)
 
 // DecodeHashStr decodes an Argon2id formatted hash string into a Hashed object.
 // Which is the value returned by Hashed.String() method.
@@ -64,14 +67,24 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 		return nil, errors.Wrap(err, "failed to decode salt value")
 	}
 
-	params.SaltLength = uint32(len(salt))
+	lenSalt := len(salt)
+	if lenSalt > maxInt32 {
+		return nil, errors.New("salt length is too long")
+	}
+
+	params.SaltLength = uint32(lenSalt)
 
 	hash, err := base64.RawStdEncoding.Strict().DecodeString(vals[5])
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode hash value")
 	}
 
-	params.KeyLength = uint32(len(hash))
+	lenHash := lenSalt
+	if lenHash > maxInt32 {
+		return nil, errors.New("hash length is too long")
+	}
+
+	params.KeyLength = uint32(lenHash)
 
 	hashedObj := &Hashed{
 		Params: params,

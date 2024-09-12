@@ -11,16 +11,16 @@ run:
   # List of build tags, all linters use it. Default is empty list.
   build-tags:
     - golangci
-  # Which dirs to skip. Issues from them won't be reported.
-  skip-dirs:
-    - .github
   # Allow multiple parallel golangci-lint instances running.
   allow-parallel-runners: true
 
+issues:
+  # Which dirs to skip. Issues from them won't be reported.
+  exclude-dirs:
+    - .github
+
 # Output configuration options
 output:
-  format: colored-line-number
-
   # Sorts results by: filepath, line and column
   sort-results: true
 
@@ -28,17 +28,22 @@ output:
 linters:
   enable-all: true
   disable:
-  # Disable deprecated linters
-  - exhaustivestruct
-  - golint
-  - ifshort
-  - interfacer
-  - maligned
-  - scopelint
-  - structcheck
-  - varcheck
-  - deadcode
-  - nosnakecase
+  # Remove deactivated deprecated linters
+  #- exhaustivestruct
+  #- golint
+  #- ifshort
+  #- interfacer
+  #- maligned
+  #- scopelint
+  #- structcheck
+  #- varcheck
+  #- deadcode
+  #- nosnakecase
+  #
+  # Disable deprecated and avandonded linters
+  - execinquery
+  - exportloopref
+  - gomnd
 linters-settings:
   depguard:
     rules:
