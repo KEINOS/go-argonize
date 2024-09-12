@@ -13,7 +13,6 @@
 #     $ docker compose --file ./.github/docker-compose.yml run tidy
 # - NOT recommended to run all tests at once whith "up":
 #     $ docker compose --file ./.github/docker-compose.yml up
-version: "3.9"
 
 volumes:
   GO_PKG_MOD:
