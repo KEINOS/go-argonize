@@ -79,7 +79,7 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 		return nil, errors.Wrap(err, "failed to decode hash value")
 	}
 
-	lenHash := lenSalt
+	lenHash := len(hash)
 	if lenHash > maxInt32 {
 		return nil, errors.New("hash length is too long")
 	}
