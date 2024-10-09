@@ -47,26 +47,6 @@ func Example() {
 
 - [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
 
-## FAQ
-
-- **Q:** "**How can I recover the original password** from a hashed password?"
-  - **A:** **You can't**. That is the purpose of hashes. You can only check if a password is valid. Note that hashes do not encrypt values.
-- **Q:** "If hashed passwords cannot be recovered, does this mean that **hashed data is safe from theft?**"
-  - **A:** **No**. Hashing is not synonymous with "theft protection".
-  After password hashing, it is no longer possible to "calculate" the original password, but a **brute force attack or rainbow table attack can find** the original password.
-  Argon2id is currently the strongest password hashing algorithm, but if a hashed password is stolen, it takes so long to crack it that **it only buys time** until the next countermeasure can be taken.
-  This is true regardless of the algorithm used. The problem is that the system is designed to enable data theft. If you do not understand this dilemma, the only way to prevent data theft is to not store the data in the first place. It is a strong statement, but it's a question that comes up so often that we had to write about it. 😭
-
-## Statuses
-
-[![UnitTests](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml)
-[![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml)
-[![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml)
-[![PlatformTests](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml "Tests on Win, macOS and Linux")
-
-[![codecov](https://codecov.io/gh/KEINOS/go-argonize/branch/main/graph/badge.svg?token=JVY7WUeUFz)](https://codecov.io/gh/KEINOS/go-argonize)
-[![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-argonize)](https://goreportcard.com/report/github.com/KEINOS/go-argonize)
-
 ## Contributing
 
 [![go1.22+](https://img.shields.io/badge/Go-1.22+-blue?logo=go)](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml#L81 "Supported versions")
@@ -77,8 +57,25 @@ func Example() {
 Any Pull-Request for improvement is welcome!
 
 - Branch to PR: `main`
-- [CIs](https://github.com/KEINOS/go-argonize/actions) on PR/Push: `unit-tests` `golangci-lint` `codeQL-analysis` `platform-tests`
-- [Security policy](https://github.com/KEINOS/go-argonize/security/policy)
+- [CI](https://github.com/KEINOS/go-argonize/actions)s on PR/Push:
+  - [unit-tests](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml)
+    - Inclues compatibility tests against PHP and Python
+  - [golangci-lint](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/golangci-lint.yml)
+    - [GolangCI-Lint Configuration](https://github.com/KEINOS/go-argonize/blob/main/.golangci.yml)
+  - [platform-tests](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/platform-tests.yml)
+    - Tests on Win, macOS and Linux
+  - [codeQL-analysis](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/codeQL-analysis.yml)
+- [Our Security Policy](https://github.com/KEINOS/go-argonize/security/policy)
+
+### Statuses
+
+[![UnitTests](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml)
+[![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml)
+[![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml)
+[![PlatformTests](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml "Tests on Win, macOS and Linux")
+
+[![codecov](https://codecov.io/gh/KEINOS/go-argonize/branch/main/graph/badge.svg?token=JVY7WUeUFz)](https://codecov.io/gh/KEINOS/go-argonize)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-argonize)](https://goreportcard.com/report/github.com/KEINOS/go-argonize)
 
 ## License, copyright and credits
 
