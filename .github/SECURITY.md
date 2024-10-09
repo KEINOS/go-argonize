@@ -4,8 +4,8 @@
 
 | Version | Status | Note |
 | :------ | :----- | :--- |
-| Go 1.14, 1.15 ... latest | [![go1.14+](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml "Unit tests on various Go versions") | Including Go 1.19 |
-| Golangci-lint 1.48.0 or later | [![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml) | |
+| Go 1.22 ... latest | [![go1.22+](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml "Unit tests on various Go versions") | This will compare the results of the built [sample](https://github.com/KEINOS/go-argonize/blob/main/_examples/main.go) binary against [PHP](https://github.com/KEINOS/go-argonize/blob/main/_examples/main.php) and [Python](https://github.com/KEINOS/go-argonize/blob/main/_examples/main.py) for compatibility as well. |
+| Golangci-lint latest | [![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml) | |
 | Security advisories | [Enabled](https://github.com/KEINOS/go-argonize/security/advisories) | |
 | Dependabot alerts | [Enabled](https://github.com/KEINOS/go-argonize/security/dependabot) | (Only for admins) |
 | Code scanning alerts | [Enabled](https://github.com/KEINOS/go-argonize/security/code-scanning)<br>[![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml) ||

@@ -26,10 +26,10 @@ func TestDecodeHashGob(t *testing.T) {
 //  DecodeHashStr()
 // ----------------------------------------------------------------------------
 
-// The _DecodeHashStrBadCase is a list of test cases for DecodeHashStr().
+// The _DecodeHashStrBadCases is a list of test cases for DecodeHashStr().
 //
 //nolint:gochecknoglobals
-var _DecodeHashStrBadCase = []struct {
+var _DecodeHashStrBadCases = []struct {
 	encodedHash string
 	msgContain  string
 	errMsg      string
@@ -64,12 +64,17 @@ var _DecodeHashStrBadCase = []struct {
 		"failed to decode hash value",
 		"malformed salt should be an error",
 	},
+	{
+		"$argon2id$v=19$m=65536,t=3,p=2$Woo$D4TzIwGO4XD2buk96qAP+Ed2baMo/KbTRMqXX00wtsU",
+		"hash or salt length is too long or too short",
+		"salt and hash that are out of range length should be an error",
+	},
 }
 
 func TestDecodeHashStr(t *testing.T) {
 	t.Parallel()
 
-	for _, tt := range _DecodeHashStrBadCase {
+	for _, tt := range _DecodeHashStrBadCases {
 		hashedObj, err := argonize.DecodeHashStr(tt.encodedHash)
 
 		require.Error(t, err, tt.errMsg)
