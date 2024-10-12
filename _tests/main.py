@@ -1,6 +1,11 @@
-# This Python script generates a random password and uses the Go app to password-hash it.
-# Then it will verify the generated password against the original password in Python.
-
+# =============================================================================
+#  This Python script generates a random password and uses the Go app to
+#  password-hash it. Then it will verify the generated password against the
+#  original password in Python.
+#  This script exits with status 0 if the verification is successful, otherwise 1.
+#
+#  This is the entrypoint for the Docker_py.
+# =============================================================================
 import subprocess
 import argon2
 import hashlib
