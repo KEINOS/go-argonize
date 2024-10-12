@@ -10,7 +10,7 @@ RUN apk add --no-cache \
 
 COPY . /workspaces
 
-WORKDIR /workspaces/_examples
+WORKDIR /workspaces/_tests
 
 RUN \
     go mod init sample && \

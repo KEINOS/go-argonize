@@ -1,0 +1,64 @@
+# -----------------------------------------------------------------------------
+#  Build Base Stage
+# -----------------------------------------------------------------------------
+FROM golang:alpine AS build-base
+
+WORKDIR /workspaces
+
+RUN apk add --no-cache \
+    git \
+    alpine-sdk \
+    build-base
+
+# -----------------------------------------------------------------------------
+#  Build Stage (Clang)
+# -----------------------------------------------------------------------------
+FROM build-base AS build-c
+
+WORKDIR /workspaces
+
+RUN \
+    git clone https://github.com/P-H-C/phc-winner-argon2.git && \
+    cd phc-winner-argon2 && \
+    make && \
+    # Smoke test
+    ./argon2 -h 2>&1 | grep Usage
+
+# -----------------------------------------------------------------------------
+#  Build Stage (Clang)
+# -----------------------------------------------------------------------------
+FROM build-base AS build-go
+
+COPY . /workspaces/go
+
+WORKDIR /workspaces/go/_tests
+
+RUN \
+    go mod init sample && \
+    go mod tidy && \
+    go install \
+        -ldflags="-s -w -extldflags \"-static\"" \
+        .
+
+# -----------------------------------------------------------------------------
+#  Main Stage
+# -----------------------------------------------------------------------------
+FROM alpine:latest
+
+WORKDIR /workspaces
+
+# Copy from build-c
+COPY --from=build-c /workspaces/phc-winner-argon2/argon2 /usr/local/bin/argon2
+# Copy from build-go
+COPY --from=build-go /go/bin/sample /usr/local/bin/sample
+# Copy script to compare the output
+COPY --from=build-go /workspaces/go/_tests/main.sh /workspaces/main.sh
+
+RUN \
+    # Smoke test Clang
+    echo -n "password" | argon2 somesalt -t 2 -m 16 -p 4 -l 24 | grep 45d7ac72e76f242b20b77b9bf9bf9d5915894e669a24e6c6 && \
+    # Smoke test Go
+    sample "password"
+
+# Run the script
+ENTRYPOINT ["/bin/sh", "/workspaces/main.sh"]

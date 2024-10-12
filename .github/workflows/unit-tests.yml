@@ -48,6 +48,7 @@ jobs:
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-latest_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar
+          docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-clang_1.tar
 
       - name: Pull base images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
@@ -73,6 +74,7 @@ jobs:
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-latest_1.tar github-latest:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar github-php:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar github-python:latest
+          docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-clang_1.tar github-clang:latest
 
       - name: Run tests on minimum supported Go version
         run: docker compose --file ./.github/docker-compose.yml run min
@@ -82,3 +84,5 @@ jobs:
         run: docker compose --file ./.github/docker-compose.yml run php
       - name: Compatibility test on Python
         run: docker compose --file ./.github/docker-compose.yml run python
+      - name: Compatibility test on C
+        run: docker compose --file ./.github/docker-compose.yml run clang

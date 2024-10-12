@@ -52,17 +52,20 @@ services:
   php:
     build:
       context: ..
-      dockerfile: ./_examples/Dockerfile_php
-      args:
-        VARIANT: alpine
+      dockerfile: ./_tests/Dockerfile_php
     volumes:
-      - ../_examples/main.php:/workspaces/main.php
+      - ../_tests/main.php:/workspaces/main.php
   # Compatibility test with Python3
   python:
     build:
       context: ..
-      dockerfile: ./_examples/Dockerfile_py
-      args:
-        VARIANT: alpine
+      dockerfile: ./_tests/Dockerfile_py
     volumes:
-      - ../_examples/main.py:/workspaces/main.py
+      - ../_tests/main.py:/workspaces/main.py
+  # Compatibility test with C
+  clang:
+    build:
+      context: ..
+      dockerfile: ./_tests/Dockerfile_clang
+    volumes:
+      - ../_tests/main.sh:/workspaces/main.sh
