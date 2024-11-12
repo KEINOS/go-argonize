@@ -59,7 +59,7 @@ Any Pull-Request for improvement is welcome!
 - Branch to PR: `main`
 - [CI](https://github.com/KEINOS/go-argonize/actions)s on PR/Push:
   - [unit-tests](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml)
-    - Inclues compatibility tests against PHP and Python
+    - Inclues compatibility tests against PHP, Python and C implementations
   - [golangci-lint](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/golangci-lint.yml)
     - [GolangCI-Lint Configuration](https://github.com/KEINOS/go-argonize/blob/main/.golangci.yml)
   - [platform-tests](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/platform-tests.yml)
