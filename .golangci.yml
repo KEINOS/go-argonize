@@ -39,11 +39,11 @@ linters:
   #- varcheck
   #- deadcode
   #- nosnakecase
+  #- execinquery
+  #- gomnd
   #
   # Disable deprecated and avandonded linters
-  - execinquery
   - exportloopref
-  - gomnd
 linters-settings:
   depguard:
     rules:
