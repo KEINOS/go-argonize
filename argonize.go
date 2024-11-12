@@ -207,7 +207,7 @@ func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 
 // Gob returns the gob-encoded byte slice of the current Hashed object.
 // This is useful when hashes are stored in the database in bytes.
-func (h Hashed) Gob() ([]byte, error) {
+func (h *Hashed) Gob() ([]byte, error) {
 	var network bytes.Buffer // Stand-in for the network.
 
 	enc := gob.NewEncoder(&network)
@@ -248,7 +248,7 @@ func (h *Hashed) IsValidPassword(password []byte) bool {
 // representation of the Argon2 algorithm.
 //
 // To decode to a Hashed object, use the DecodeHashStr() function.
-func (h Hashed) String() string {
+func (h *Hashed) String() string {
 	// Base64 encode the salt and hashed password.
 	b64Salt := base64.RawStdEncoding.EncodeToString(h.Salt)
 	b64Hash := base64.RawStdEncoding.EncodeToString(h.Hash)
