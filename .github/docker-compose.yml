@@ -62,7 +62,7 @@ services:
       dockerfile: ./_tests/Dockerfile_py
     volumes:
       - ../_tests/main.py:/workspaces/main.py
-  # Compatibility test with C
+  # Compatibility test with C (not the clang compiler)
   clang:
     build:
       context: ..
