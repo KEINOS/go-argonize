@@ -12,7 +12,7 @@ myPassword="$(mkpasswd -m sha512crypt "${RANDOM}" | tr -d "$/.")"
 echo "Password: ${myPassword} (random)"
 
 # Generate a random salt
-salt="${RANDOM}${RANDOM}"
+salt="${RANDOM}${RANDOM}${RANDOM}" # 8 char rand num (fix #58)
 echo "Salt: ${salt} (random)"
 
 # Generate a hash using the C implementation

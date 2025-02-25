@@ -18,13 +18,11 @@ volumes:
   GO_PKG_MOD:
 
 services:
-  # Service tidy updates the go.mod to the latest
+  # Service tidy updates the go.mod on minimum Go version
   tidy:
     build:
       context: ..
       dockerfile: ./.github/Dockerfile
-      args:
-        VARIANT: 1.22-alpine
     volumes:
       - ..:/workspaces
     entrypoint: [ "./.github/run_go_mod_tidy.sh" ]
@@ -33,8 +31,6 @@ services:
     build:
       context: ..
       dockerfile: ./.github/Dockerfile
-      args:
-        VARIANT: 1.22-alpine
     volumes:
       - ..:/workspaces
       - GO_PKG_MOD:/go/pkg/mod
@@ -62,7 +58,7 @@ services:
       dockerfile: ./_tests/Dockerfile_py
     volumes:
       - ../_tests/main.py:/workspaces/main.py
-  # Compatibility test with C
+  # Compatibility test with C (not the clang compiler)
   clang:
     build:
       context: ..

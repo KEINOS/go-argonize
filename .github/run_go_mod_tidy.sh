@@ -13,21 +13,14 @@
 
 set -eu
 
+min_go_version="1.23.0"
+
 echo '* Backup modules ...'
 cp -f go.mod go.mod.bak
 cp -f go.sum go.sum.bak
 
-# echo '* Create new blank go.mod ...'
-# # Copy the first 4 lines of the go.mod.bak file to the new go.mod file.
-# < go.mod.bak head -n 4 > go.mod
-
-# echo '* Get latest modules ...'
-# go get "github.com/pkg/errors"
-# go get "github.com/stretchr/testify"
-# go get "golang.org/x/crypto"
-
 echo '* Run go tidy ...'
-go mod tidy -go=1.22
+go mod tidy -go=$min_go_version
 
 echo '* Run tests ...'
 go test ./... && {

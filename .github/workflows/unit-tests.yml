@@ -53,13 +53,8 @@ jobs:
       - name: Pull base images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          : # Pull minimum supported Go version
-          docker pull golang:1.22-alpine
-          : # Pull latest Go version
-          docker pull golang:alpine
-          : # Pull latest PHP and Python images
-          docker pull php:alpine
-          docker pull python:alpine
+          # Pull the base images for stability
+          docker compose --file ./.github/docker-compose.yml pull
 
       - name: Build Docker images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'

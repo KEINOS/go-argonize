@@ -1,8 +1,7 @@
 <!-- markdownlint-disable-file MD041 -->
 # go-argonize
 
-[![go1.22+](https://img.shields.io/badge/Go-1.22+-blue?logo=go)](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml#L81 "Supported versions")
-[![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/KEINOS/go-argonize)](https://github.com/KEINOS/go-argonize/blob/main/go.mod#L3 "Supported versions")[![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
 
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2).
 
@@ -11,7 +10,7 @@ go get "github.com/KEINOS/go-argonize"
 ```
 
 ```go
-func Example() {
+func Example_basic() {
     // Your strong and unpredictable password
     password := []byte("my password")
 
@@ -45,11 +44,42 @@ func Example() {
 }
 ```
 
+```go
+func Example_from_saved_password() {
+  // Load the hashed password from a file, DB or etc.
+  savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
+
+  // Decode the saved password to a Hashed object.
+  // Note that once hashed, passwords cannot be recovered and can only be
+  // verified.
+  hashObj, err := argonize.DecodeHashStr(savedPasswd)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Validate the password against the hashed password.
+  if hashObj.IsValidPassword([]byte("my password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+
+  if hashObj.IsValidPassword([]byte("wrong password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+  // Output:
+  // the password is valid
+  // the password is invalid
+}
+```
+
 - [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
 
 ## Contributing
 
-[![go1.22+](https://img.shields.io/badge/Go-1.22+-blue?logo=go)](https://github.com/KEINOS/go-argonize/blob/main/.github/workflows/unit-tests.yml#L81 "Supported versions")
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/KEINOS/go-argonize)](https://github.com/KEINOS/go-argonize/blob/main/go.mod#L3 "Supported versions")
 [![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
 [![Opened Issues](https://img.shields.io/github/issues/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/issues "opened issues")
 [![PR](https://img.shields.io/github/issues-pr/KEINOS/go-argonize?color=lightblue&logo=github)](https://github.com/KEINOS/go-argonize/pulls "Pull Requests")

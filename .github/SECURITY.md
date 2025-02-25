@@ -1,11 +1,27 @@
 # Security Policy
 
-## Supported  Versions and Statuses
+## Fail Fast Policy
+
+We update the `go.mod` version weekly to keep up with the latest security patches and updates. It may break the backward compatibility but we prefer to fail fast and fix it fast.
+
+## Basic Tests
+
+As a minimum security measure, we keep the following green as much as possible:
+
+[![UnitTests](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml)
+[![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml)
+[![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml)
+[![PlatformTests](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/platform-tests.yml "Tests on Win, macOS and Linux")
+
+[![codecov](https://codecov.io/gh/KEINOS/go-argonize/branch/main/graph/badge.svg?token=JVY7WUeUFz)](https://codecov.io/gh/KEINOS/go-argonize)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-argonize)](https://goreportcard.com/report/github.com/KEINOS/go-argonize)
+
+- Code coverage and quality (`go report`) does nothing to do with security. But keeping them high will help maintenance which will help security in the long run.
+
+## Vulnerability Checks
 
 | Version | Status | Note |
 | :------ | :----- | :--- |
-| Go 1.22 ... latest | [![go1.22+](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/unit-tests.yml "Unit tests on various Go versions") | This will compare the results of the built [sample](https://github.com/KEINOS/go-argonize/blob/main/_tests/main.go) binary against [PHP](https://github.com/KEINOS/go-argonize/blob/main/_tests/main.php) and [Python](https://github.com/KEINOS/go-argonize/blob/main/_tests/main.py) for compatibility as well. |
-| Golangci-lint latest | [![golangci-lint](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/golangci-lint.yml) | |
 | Security advisories | [Enabled](https://github.com/KEINOS/go-argonize/security/advisories) | |
 | Dependabot alerts | [Enabled](https://github.com/KEINOS/go-argonize/security/dependabot) | (Only for admins) |
 | Code scanning alerts | [Enabled](https://github.com/KEINOS/go-argonize/security/code-scanning)<br>[![CodeQL-Analysis](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-argonize/actions/workflows/codeQL-analysis.yml) ||
