@@ -3,7 +3,7 @@
 
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/KEINOS/go-argonize)](https://github.com/KEINOS/go-argonize/blob/main/go.mod#L3 "Supported versions")[![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-argonize.svg)](https://pkg.go.dev/github.com/KEINOS/go-argonize/ "View document")
 
-**Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2).
+**Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2). This package is tested compatibilities with PHP, Python and C implementations.
 
 ```go
 go get "github.com/KEINOS/go-argonize"
