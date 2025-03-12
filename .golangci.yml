@@ -1,6 +1,6 @@
 # This file contains configuration options for GolangCI-Lint.
 #
-# - It requires golangci-lint 1.48.0 or newer.
+# - It requires golangci-lint v1.64.0 or newer.
 # - Available linters see: https://golangci-lint.run/usage/linters/
 # - Sample of config see: https://golangci-lint.run/usage/configuration/#config-file
 
@@ -41,9 +41,10 @@ linters:
   #- nosnakecase
   #- execinquery
   #- gomnd
+  # - exportloopref
   #
   # Disable deprecated and avandonded linters
-  - exportloopref
+  - tenv
 linters-settings:
   depguard:
     rules:
@@ -52,6 +53,8 @@ linters-settings:
         allow:
           # Go standard library
           - $gostd
+          # Required as a major dependency
+          - golang.org/x/crypto/argon2
           # Required for testing
           - github.com/KEINOS/go-argonize
           - github.com/stretchr/testify
