@@ -22,7 +22,4 @@ jobs:
           check-latest: true
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          # Use latest version of golangci-lint
-          version: latest
+        uses: golangci/golangci-lint-action@v8
