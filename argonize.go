@@ -91,7 +91,8 @@ func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
 func RandomBytes(lenOut uint32) ([]byte, error) {
 	bytesOut := make([]byte, lenOut)
 
-	if _, err := RandRead(bytesOut); err != nil {
+	_, err := RandRead(bytesOut)
+	if err != nil {
 		return nil, errors.Wrap(err, "failed to read random bytes")
 	}
 
@@ -131,8 +132,8 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 
 	var version int
 
-	if _, err := fmt.Sscanf(vals[2],
-		"v=%d", &version); err != nil {
+	_, err := fmt.Sscanf(vals[2], "v=%d", &version)
+	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse the version")
 	}
 
@@ -142,8 +143,9 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 
 	params := NewParams()
 
-	if _, err := fmt.Sscanf(vals[3],
-		"m=%d,t=%d,p=%d", &params.MemoryCost, &params.Iterations, &params.Parallelism); err != nil {
+	_, err = fmt.Sscanf(vals[3], "m=%d,t=%d,p=%d",
+		&params.MemoryCost, &params.Iterations, &params.Parallelism)
+	if err != nil {
 		return nil, errors.Wrap(err, "missing parameters in the hash")
 	}
 
@@ -194,7 +196,8 @@ func DecodeHashGob(gobEncHash []byte) (*Hashed, error) {
 	// Prepare the variable to store the decoded value.
 	var hashedObj Hashed
 
-	if err := dec.Decode(&hashedObj); err != nil {
+	err := dec.Decode(&hashedObj)
+	if err != nil {
 		return nil, errors.Wrap(err, "failed to gob decode the hash")
 	}
 

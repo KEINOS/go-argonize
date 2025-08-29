@@ -168,9 +168,8 @@ func Example_gob_encode_and_decode() {
 func Example_static_output() {
 	// Backup and defer restoring the random reader.
 	oldRandRead := argonize.RandRead
-	defer func() {
-		argonize.RandRead = oldRandRead
-	}()
+
+	defer func() { argonize.RandRead = oldRandRead }()
 
 	// Set/mock the random reader function as a static reader.
 	//

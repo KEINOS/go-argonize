@@ -174,6 +174,7 @@ func TestHash_IsValidPassword_compatibility(t *testing.T) {
 func TestNewSalt(t *testing.T) {
 	// Backup and defer restore the random reader.
 	oldRandRead := argonize.RandRead
+
 	defer func() { argonize.RandRead = oldRandRead }()
 
 	argonize.RandRead = func(_ []byte) (int, error) {
