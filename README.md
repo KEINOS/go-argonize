@@ -5,8 +5,14 @@
 
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2). This package is tested compatibilities with PHP, Python and C implementations.
 
-```go
+```sh
+# Install the module
 go get "github.com/KEINOS/go-argonize"
+```
+
+```go
+// Import the package
+import "github.com/KEINOS/go-argonize"
 ```
 
 ```go
@@ -14,7 +20,9 @@ func Example_basic() {
     // Your strong and unpredictable password
     password := []byte("my password")
 
-    // Password hash your password
+    // Password hash your password.
+    // Note that once hashed, passwords cannot be recovered and can only be
+    // used to verify.
     hashedObj, err := argonize.Hash(password)
     if err != nil {
         log.Fatal(err)
@@ -47,11 +55,11 @@ func Example_basic() {
 ```go
 func Example_from_saved_password() {
   // Load the hashed password from a file, DB or etc.
+  // Note that once hashed, passwords cannot be recovered and can only be
+  // used to verify.
   savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
 
-  // Decode the saved password to a Hashed object.
-  // Note that once hashed, passwords cannot be recovered and can only be
-  // verified.
+  // Decode the saved password to an `argonize.Hashed` object.
   hashObj, err := argonize.DecodeHashStr(savedPasswd)
   if err != nil {
     log.Fatal(err)

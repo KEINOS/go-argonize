@@ -9,6 +9,7 @@ linters:
   disable:
     # Disable due to the new major version. Replaced by wsl_v5.
     - wsl
+    # Disable due to the external dependency
     - depguard
   exclusions:
     generated: lax
