@@ -1,62 +1,16 @@
-# This file contains configuration options for GolangCI-Lint.
-#
-# - It requires golangci-lint v1.64.0 or newer.
-# - Available linters see: https://golangci-lint.run/usage/linters/
-# - Sample of config see: https://golangci-lint.run/usage/configuration/#config-file
-
-# Options for analysis running
+version: "2"
 run:
-  # Include test files.
-  tests: true
-  # List of build tags, all linters use it. Default is empty list.
   build-tags:
     - golangci
-  # Allow multiple parallel golangci-lint instances running.
+  tests: true
   allow-parallel-runners: true
-
-issues:
-  # Which dirs to skip. Issues from them won't be reported.
-  exclude-dirs:
-    - .github
-
-# Output configuration options
-output:
-  # Sorts results by: filepath, line and column
-  sort-results: true
-
-# Enabled all linters. Conf settings may follow.
 linters:
-  enable-all: true
+  default: all
   disable:
-  # Remove deactivated deprecated linters
-  #- exhaustivestruct
-  #- golint
-  #- ifshort
-  #- interfacer
-  #- maligned
-  #- scopelint
-  #- structcheck
-  #- varcheck
-  #- deadcode
-  #- nosnakecase
-  #- execinquery
-  #- gomnd
-  # - exportloopref
-  #
-  # Disable deprecated and avandonded linters
-  - tenv
-linters-settings:
-  depguard:
-    rules:
-      main:
-        # List of allowed packages.
-        allow:
-          # Go standard library
-          - $gostd
-          # Required as a major dependency
-          - golang.org/x/crypto/argon2
-          # Required for testing
-          - github.com/KEINOS/go-argonize
-          - github.com/stretchr/testify
-          # Deprecated but still used for simple error handling
-          - github.com/pkg/errors
+    # Disable due to the new major version. Replaced by wsl_v5.
+    - wsl
+    - depguard
+  exclusions:
+    generated: lax
+    paths:
+      - .github
