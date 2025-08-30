@@ -82,9 +82,9 @@ func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
 }
 
 // RandomBytes returns a random number of byte slice with the given length.
+//
 // It is a cryptographically secure random number generated from `crypto.rand`
 // package.
-//
 // If it is determined that a cryptographically secure number cannot be generated,
 // an error is returned. Also note that if lenOut is zero, an empty byte slice
 // is returned with no error.
@@ -345,6 +345,8 @@ type Salt []byte
 // ----------------------------------------------------------------------------
 
 // NewSalt returns a new Salt object with a random salt and given length.
+//
+// Note that if lenOut is zero, an empty byte slice is returned with no error.
 func NewSalt(lenOut uint32) (Salt, error) {
 	salt, err := RandomBytes(lenOut)
 	if err != nil {
