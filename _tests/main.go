@@ -3,7 +3,12 @@
 This Go application takes a password and an optional salt as arguments and
 outputs the hashed password using the Argon2id algorithm.
 
-The parameters are: -t 1 -m 16 -p 2 -l 32
+The parameters follow RFC 9106 SECOND RECOMMENDED:
+  - t (passes) = 3
+  - m (memory)  = 65536 KiB (64 MiB)
+  - p (parallel) = 4
+  - l (tag) = 32 bytes
+
 ===============================================================================
 */
 package main
@@ -15,6 +20,12 @@ import (
 
 	"github.com/KEINOS/go-argonize"
 	"github.com/pkg/errors"
+)
+
+const (
+	// minArgsForSalt is the minimum number of command line arguments required
+	// so that the second argument can be interpreted as a user-provided salt.
+	minArgsForSalt = 3
 )
 
 func main() {
@@ -30,7 +41,7 @@ func main() {
 
 	password := strings.TrimSpace(os.Args[1])
 
-	if argLen >= 3 {
+	if argLen >= minArgsForSalt {
 		salt = []byte(strings.TrimSpace(os.Args[2]))
 	}
 

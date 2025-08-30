@@ -79,11 +79,11 @@ func Example_custom_params() {
 	}
 
 	// Output:
-	// Default iterations: 1
+	// Default iterations: 3
 	// Default key length: 32
 	// Default memory cost: 65536
 	// Default salt length: 16
-	// Default parallelism: 2
+	// Default parallelism: 4
 	// the password is valid
 	// the password is invalid
 }
@@ -189,8 +189,8 @@ func Example_static_output() {
 	fmt.Println("String:", hashedObj.String())
 	fmt.Printf("Hashed: %x\n", hashedObj.Hash)
 	// Output:
-	// String: $argon2id$v=19$m=65536,t=1,p=2$MDEyMzQ1Njc4OWFiY2RlZg$ytVHh/XAyQmzALFYvBRKET/7GswiVnDdubchuBeU/Yw
-	// Hashed: cad54787f5c0c909b300b158bc144a113ffb1acc225670ddb9b721b81794fd8c
+	// String: $argon2id$v=19$m=65536,t=3,p=4$MDEyMzQ1Njc4OWFiY2RlZg$DGSsb/y+38VbtrsbfVuD8xEgSNq4EL6/C0h7nEAqMTs
+	// Hashed: 0c64ac6ffcbedfc55bb6bb1b7d5b83f3112048dab810bebf0b487b9c402a313b
 }
 
 // ----------------------------------------------------------------------------
@@ -248,11 +248,11 @@ func ExampleNewParams() {
 	fmt.Println("Default parallelism:", params.Parallelism)
 
 	// Output:
-	// Default iterations: 1
+	// Default iterations: 3
 	// Default key length: 32
 	// Default memory cost: 65536
 	// Default salt length: 16
-	// Default parallelism: 2
+	// Default parallelism: 4
 }
 
 // ----------------------------------------------------------------------------

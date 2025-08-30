@@ -35,6 +35,10 @@ WORKDIR /workspaces/go/_tests
 
 RUN \
     go mod init sample && \
+    # Ensure the sample module uses the local copy of github.com/KEINOS/go-argonize so that
+    # tests exercise the local changes instead of fetching from the remote repo. Add a replace
+    # directive before running `go mod tidy`.
+    echo "replace github.com/KEINOS/go-argonize => ../" >> go.mod && \
     go mod tidy && \
     go install \
         -ldflags="-s -w -extldflags \"-static\"" \

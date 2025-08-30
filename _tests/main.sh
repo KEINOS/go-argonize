@@ -17,7 +17,10 @@ echo "Salt: ${salt} (random)"
 
 # Generate a hash using the C implementation
 # shellcheck disable=SC3037 # POSIX sh, echo -n flag is not supported but ash in Alpine does
-hashClang=$(echo -n "${myPassword}" | argon2 "${salt}" -t 1 -m 16 -p 2 -l 32 -id | grep Encoded | sed -r 's/Encoded:(.)/\2/')
+# Use RFC 9106 SECOND RECOMMENDED parameters: t=3, memory=65536 KiB (64 MiB), p=4, l=32.
+# Note: the phc-winner-argon2 CLI's -m flag expects the base-2 exponent so that
+# memory = 2^m KiB. To request 65536 KiB (64 MiB), pass -m 16 because 2^16 = 65536.
+hashClang=$(echo -n "${myPassword}" | argon2 "${salt}" -t 3 -m 16 -p 4 -l 32 -id | grep Encoded | sed -r 's/Encoded:(.)/\2/')
 echo "Hash (Clang ): ${hashClang}"
 
 # Generate a hash using the Golang implementation
