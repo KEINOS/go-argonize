@@ -276,34 +276,35 @@ func (h *Hashed) String() string {
 // Params holds the parameters for the Argon2id algorithm.
 type Params struct {
 	// Iterations is the number of iterations or passes over the memory.
-	// Defaults to 1 which is the sensible number from the Argon2's draft RFC
-	// recommends[2].
+	// Default is 3 to follow RFC 9106 SECOND RECOMMENDED (t=3).
 	Iterations uint32
 	// KeyLength is the length of the key used in Argon2.
 	// Defaults to 32.
 	KeyLength uint32
 	// MemoryCost is the amount of memory used by the algorithm in KiB.
-	// Defaults to 64 * 1024 KiB = 64 MiB. Which is the sensible number from
-	// the Argon2's draft RFC recommends[2].
+	// Default is 64 MiB = 64 * 1024 KiB to follow RFC 9106 SECOND RECOMMENDED (m=64 MiB).
 	MemoryCost uint32
 	// SaltLength is the length of the salt used in Argon2.
 	// Defaults to 16.
 	SaltLength uint32
 	// Parallelism is the number of threads or lanes used by the algorithm.
-	// Defaults to 2.
+	// Default is 4 to follow RFC 9106 SECOND RECOMMENDED (p=4).
 	Parallelism uint8
 }
 
 const (
-	// IterationsDefault is the default number of iterations of the parameter used by the Argon2id algorithm.
-	IterationsDefault = uint32(1)
-	// KeyLengthDefault is the default key length used in the Argon2id algorithm parameters.
+	// IterationsDefault is the default number of iterations (passes) used by Argon2id.
+	// Set to 3 to follow RFC 9106 SECOND RECOMMENDED (t=3).
+	IterationsDefault = uint32(3)
+	// KeyLengthDefault is the default output tag length in bytes (256 bits).
 	KeyLengthDefault = uint32(32)
-	// MemoryCostDefault is the default amount of memory (KiB) used by the algorithm parameters.
+	// MemoryCostDefault is the default memory size in KiB.
+	// Set to 64 MiB = 64 * 1024 KiB to follow RFC 9106 SECOND RECOMMENDED (m=64 MiB).
 	MemoryCostDefault = uint32(64 * 1024)
-	// ParallelismDefault is the default number of threads used in the algorithm parameters.
-	ParallelismDefault = uint8(2)
-	// SaltLengthDefault is the default length of the salt used in the Argon2id algorithm parameters.
+	// ParallelismDefault is the default number of lanes/threads.
+	// Set to 4 to follow RFC 9106 SECOND RECOMMENDED (p=4).
+	ParallelismDefault = uint8(4)
+	// SaltLengthDefault is the default salt length in bytes (128 bits).
 	SaltLengthDefault = uint32(16)
 )
 
