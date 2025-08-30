@@ -34,6 +34,38 @@ import (
 var RandRead = rand.Read
 
 // ============================================================================
+//  Constants
+// ============================================================================
+// Extracted to avoid magic-number linter warnings and to document intent.
+
+const (
+	// Maximum value for int32 to avoid overflow.
+	maxInt32 = 2147483647
+	// Number of chunks in the encoded hash string.
+	lenDecChunks = 6
+)
+
+// FIRST RECOMMENDED (RFC 9106) parameter presets.
+// Less iteration but more memory.
+const (
+	RFCFirstIterations  = 1
+	RFCFirstKeyLength   = 32
+	RFCFirstMemoryKiB   = 2 * 1024 * 1024 // 2 GiB in KiB
+	RFCFirstSaltLength  = 16
+	RFCFirstParallelism = 4
+)
+
+// SECOND RECOMMENDED (RFC 9106) parameter presets.
+// Default. More iteration but less memory.
+const (
+	RFCSecondIterations  = 3
+	RFCSecondKeyLength   = 32
+	RFCSecondMemoryKiB   = 64 * 1024 // 64 MiB in KiB
+	RFCSecondSaltLength  = 16
+	RFCSecondParallelism = 4
+)
+
+// ============================================================================
 //  Functions
 // ============================================================================
 
@@ -113,11 +145,6 @@ type Hashed struct {
 // ----------------------------------------------------------------------------
 //  Constructors of Hashed
 // ----------------------------------------------------------------------------
-
-const (
-	maxInt32     = 2147483647
-	lenDecChunks = 6 // Number of chunks in the encoded hash string.
-)
 
 // DecodeHashStr decodes an Argon2id formatted hash string into a Hashed object.
 // Which is the value returned by Hashed.String() method.
@@ -292,21 +319,61 @@ type Params struct {
 	Parallelism uint8
 }
 
-const (
-	// IterationsDefault is the default number of iterations (passes) used by Argon2id.
-	// Set to 3 to follow RFC 9106 SECOND RECOMMENDED (t=3).
-	IterationsDefault = uint32(3)
-	// KeyLengthDefault is the default output tag length in bytes (256 bits).
-	KeyLengthDefault = uint32(32)
-	// MemoryCostDefault is the default memory size in KiB.
-	// Set to 64 MiB = 64 * 1024 KiB to follow RFC 9106 SECOND RECOMMENDED (m=64 MiB).
-	MemoryCostDefault = uint32(64 * 1024)
-	// ParallelismDefault is the default number of lanes/threads.
-	// Set to 4 to follow RFC 9106 SECOND RECOMMENDED (p=4).
-	ParallelismDefault = uint8(4)
-	// SaltLengthDefault is the default salt length in bytes (128 bits).
-	SaltLengthDefault = uint32(16)
-)
+// ----------------------------------------------------------------------------
+//  Presets (RFC 9106)
+// ----------------------------------------------------------------------------
+
+// RFC9106SecondRecommended contains a preset Params configured to follow
+// the RFC 9106 "SECOND RECOMMENDED" settings for Argon2id.
+//
+// This preset is the default configuration.
+//
+// Fields:
+//   - Iterations:  number of passes over the memory (t). Default: 3.
+//   - KeyLength:   output tag length in bytes (key length). Default: 32 bytes (256 bits).
+//   - MemoryCost:  memory size in KiB (m). Default: 64 MiB = 64 * 1024 KiB.
+//   - SaltLength:  salt length in bytes. Default: 16 bytes (128 bits).
+//   - Parallelism: number of lanes/threads (p). Default: 4.
+//
+// RFC9106SecondRecommended contains a preset Params configured to follow
+// the RFC 9106 "SECOND RECOMMENDED" settings for Argon2id.
+//
+// The variable is exported on purpose to provide a reusable preset. Disable
+// the gochecknoglobals linter for this intentional global.
+//
+//nolint:gochecknoglobals // exported preset is intentional
+var RFC9106SecondRecommended = &Params{
+	Iterations:  RFCSecondIterations,
+	KeyLength:   RFCSecondKeyLength,
+	MemoryCost:  RFCSecondMemoryKiB,
+	SaltLength:  RFCSecondSaltLength,
+	Parallelism: RFCSecondParallelism,
+}
+
+// RFC9106FirstRecommended contains a preset Params configured to follow
+// the RFC 9106 "FIRST RECOMMENDED" settings for Argon2id.
+//
+// Per RFC 9106 Section 4 the FIRST RECOMMENDED option is:
+//   - t = 1 (passes)
+//   - p = 4 (lanes / parallelism)
+//   - m = 2^21 kibibytes = 2 GiB = 2 * 1024 * 1024 KiB = 2,097,152 KiB
+//   - salt length = 128 bits (16 bytes)
+//   - tag/key length = 256 bits (32 bytes)
+//
+// RFC9106FirstRecommended contains a preset Params configured to follow
+// the RFC 9106 "FIRST RECOMMENDED" settings for Argon2id.
+//
+// The variable is exported on purpose to provide a reusable preset. Disable
+// the gochecknoglobals linter for this intentional global.
+//
+//nolint:gochecknoglobals // exported preset is intentional
+var RFC9106FirstRecommended = &Params{
+	Iterations:  RFCFirstIterations,
+	KeyLength:   RFCFirstKeyLength,
+	MemoryCost:  RFCFirstMemoryKiB, // 2 GiB in KiB
+	SaltLength:  RFCFirstSaltLength,
+	Parallelism: RFCFirstParallelism,
+}
 
 // ----------------------------------------------------------------------------
 //  Constructor of Params
@@ -327,11 +394,12 @@ func NewParams() *Params {
 
 // SetDefault sets the fields to default values.
 func (p *Params) SetDefault() {
-	p.Iterations = IterationsDefault
-	p.KeyLength = KeyLengthDefault
-	p.MemoryCost = MemoryCostDefault
-	p.SaltLength = SaltLengthDefault
-	p.Parallelism = ParallelismDefault
+	// Set defaults from the RFC9106 second recommended preset.
+	p.Iterations = RFC9106SecondRecommended.Iterations
+	p.KeyLength = RFC9106SecondRecommended.KeyLength
+	p.MemoryCost = RFC9106SecondRecommended.MemoryCost
+	p.SaltLength = RFC9106SecondRecommended.SaltLength
+	p.Parallelism = RFC9106SecondRecommended.Parallelism
 }
 
 // ============================================================================
