@@ -119,6 +119,80 @@ func Example_from_saved_password() {
 	// the password is invalid
 }
 
+// This example shows how to use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+// Note that this preset requires more memory than the default parameters.
+func Example_hashcustom_firstrecommended() {
+	// Your strong and unpredictable password
+	password := []byte("my password")
+
+	// Use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+	params := argonize.RFC9106FirstRecommended
+
+	// Generate a salt with the preset's salt length.
+	salt, err := argonize.NewSalt(params.SaltLength)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Hash using the preset parameters.
+	hashedObj := argonize.HashCustom(password, salt, params)
+
+	// Validate the password against the hashed password.
+	if hashedObj.IsValidPassword([]byte("my password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	if hashedObj.IsValidPassword([]byte("wrong password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	// Output:
+	// the password is valid
+	// the password is invalid
+}
+
+// This example shows how to tweak parameters starting from defaults and use
+// `argonize.HashCustom` with user-defined `Params`.
+func Example_custom_user_defined_params() {
+	// Your strong and unpredictable password
+	password := []byte("my password")
+
+	// Start from defaults and tweak values for this example.
+	params := argonize.NewParams()
+	params.Iterations = 2
+	params.KeyLength = 32
+	params.MemoryCost = 32 * 1024 // 32 MiB in KiB
+	params.SaltLength = 16
+	params.Parallelism = 2
+
+	salt, err := argonize.NewSalt(params.SaltLength)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hashedObj := argonize.HashCustom(password, salt, params)
+
+	if hashedObj.IsValidPassword([]byte("my password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	if hashedObj.IsValidPassword([]byte("wrong password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	// Output:
+	// the password is valid
+	// the password is invalid
+}
+
 func Example_gob_encode_and_decode() {
 	exitOnError := func(err error) {
 		if err != nil {

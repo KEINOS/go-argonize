@@ -5,6 +5,11 @@
 
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2). This package is tested compatibilities with PHP, Python and C implementations.
 
+> [!NOTE]
+> As of v1.6.0, the library defaults use the `RFC 9106 SECOND RECOMMENDED` parameters (Argon2id, t=3, m=64 MiB, p=4, salt=16 bytes, key=32 bytes).
+>
+> - For details see issue [#69](https://github.com/KEINOS/go-argonize/issues/69)
+
 ## Usage
 
 ```sh
@@ -16,6 +21,8 @@ go get "github.com/KEINOS/go-argonize"
 // Import the package
 import "github.com/KEINOS/go-argonize"
 ```
+
+### Basic Example
 
 ```go
 func Example_basic() {
@@ -53,6 +60,8 @@ func Example_basic() {
 }
 ```
 
+### Example to use a saved hashed password
+
 ```go
 func Example_from_saved_password() {
   // Load the hashed password from a file, DB or etc.
@@ -84,11 +93,93 @@ func Example_from_saved_password() {
 }
 ```
 
+### Example to use RFC 9106 FIRST RECOMMENDED preset
+
+By default, the library uses the RFC 9106 SECOND RECOMMENDED parameters.
+
+This example uses the RFC 9106 FIRST RECOMMENDED preset for hashing. Which uses less iteration but requires more memory.
+
+```go
+func Example_hashcustom_firstrecommended() {
+  // Your strong and unpredictable password
+  password := []byte("my password")
+
+  // Generate a salt with the preset's salt length.
+  salt, err := argonize.NewSalt(params.SaltLength)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+  // Note that this preset requires more memory than the default
+  // parameters.
+  params := argonize.RFC9106FirstRecommended
+
+  // Hash using the preset parameters.
+  hashedObj := argonize.HashCustom(password, salt, params)
+
+  // Validate the password against the hashed password.
+  if hashedObj.IsValidPassword([]byte("my password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+
+  if hashedObj.IsValidPassword([]byte("wrong password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+
+  // Output:
+  // the password is valid
+  // the password is invalid
+}
+```
+
+### Example with user-defined parameters
+
+This example shows how to tweak parameters starting from defaults and use
+`argonize.HashCustom` with user-defined `Params`.
+
+```go
+func Example_custom_user_defined_params() {
+  password := []byte("my password")
+
+  // Start from defaults and tweak values for this example.
+  params := argonize.NewParams()
+  params.Iterations = 2
+  params.KeyLength = 32
+  params.MemoryCost = 32 * 1024 // 32 MiB in KiB
+  params.SaltLength = 16
+  params.Parallelism = 2
+
+  salt, err := argonize.NewSalt(params.SaltLength)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  hashedObj := argonize.HashCustom(password, salt, params)
+
+  if hashedObj.IsValidPassword([]byte("my password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+
+  if hashedObj.IsValidPassword([]byte("wrong password")) {
+    fmt.Println("the password is valid")
+  } else {
+    fmt.Println("the password is invalid")
+  }
+
+  // Output:
+  // the password is valid
+  // the password is invalid
+}
+```
+
 - [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
-
-### Defaults
-
-Since v1.6.0, the library defaults use the RFC 9106 SECOND RECOMMENDED parameters (Argon2id, t=3, m=64 MiB, p=4, salt=16 bytes, key=32 bytes). (see issue [#69](https://github.com/KEINOS/go-argonize/issues/69)).
 
 ## FAQ
 
