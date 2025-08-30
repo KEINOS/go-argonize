@@ -170,18 +170,19 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 		minLenHash = 4
 	)
 
-	if lenSalt < maxInt32 && lenHash < maxInt32 && lenSalt >= minLenSalt {
-		params.SaltLength = uint32(lenSalt) //nolint:gosec // int overflow is checked above
-		params.KeyLength = uint32(lenHash)  //nolint:gosec // int overflow is checked above
-
-		return &Hashed{
-			Params: params,
-			Salt:   Salt(salt),
-			Hash:   hash,
-		}, nil
+	// Check for integer overflow and minimum length (gosec)
+	if lenSalt > maxInt32 || lenHash > maxInt32 || lenSalt < minLenSalt {
+		return nil, errors.New("hash or salt length is too long or too short")
 	}
 
-	return nil, errors.New("hash or salt length is too long or too short")
+	params.SaltLength = uint32(lenSalt)
+	params.KeyLength = uint32(lenHash)
+
+	return &Hashed{
+		Params: params,
+		Salt:   Salt(salt),
+		Hash:   hash,
+	}, nil
 }
 
 // DecodeHashGob decodes gob-encoded byte slice into a Hashed object.
