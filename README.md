@@ -23,8 +23,7 @@ func Example_basic() {
     password := []byte("my password")
 
     // Password hash your password.
-    // Note that once hashed, passwords cannot be recovered and can only be
-    // used to verify.
+    // By default it uses RFC 9106 SECOND RECOMMENDED parameters.
     hashedObj, err := argonize.Hash(password)
     if err != nil {
         log.Fatal(err)
@@ -87,9 +86,14 @@ func Example_from_saved_password() {
 
 - [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
 
-## Defaults
+### Defaults
 
 Since v1.6.0, the library defaults use the RFC 9106 SECOND RECOMMENDED parameters (Argon2id, t=3, m=64 MiB, p=4, salt=16 bytes, key=32 bytes). (see issue [#69](https://github.com/KEINOS/go-argonize/issues/69)).
+
+## FAQ
+
+- Q: Can I recover the original password from the hashed password?
+  - A: No. Note that once hashed, passwords cannot be recovered and can only be used to verify.
 
 ## Contributing
 
