@@ -13,11 +13,13 @@ COPY . /workspaces
 WORKDIR /workspaces/_tests
 
 RUN \
-    go mod init sample && \
-    go mod tidy && \
-    go install \
-      -ldflags="-s -w -extldflags \"-static\"" \
-      .
+        go mod init sample && \
+        # Ensure the sample module uses the local copy of github.com/KEINOS/go-argonize
+        echo "replace github.com/KEINOS/go-argonize => ../" >> go.mod && \
+        go mod tidy && \
+        go install \
+            -ldflags="-s -w -extldflags \"-static\"" \
+            .
 
 # -----------------------------------------------------------------------------
 #  Main Stage (Python3)
@@ -41,4 +43,4 @@ RUN \
     # Install dependencies
     python3 -m pip install passlib argon2-cffi
 
-ENTRYPOINT python3 /workspaces/main.py
+ENTRYPOINT ["python3", "/workspaces/main.py"]

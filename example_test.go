@@ -79,11 +79,11 @@ func Example_custom_params() {
 	}
 
 	// Output:
-	// Default iterations: 1
+	// Default iterations: 3
 	// Default key length: 32
 	// Default memory cost: 65536
 	// Default salt length: 16
-	// Default parallelism: 2
+	// Default parallelism: 4
 	// the password is valid
 	// the password is invalid
 }
@@ -109,6 +109,80 @@ func Example_from_saved_password() {
 	}
 
 	if hashObj.IsValidPassword([]byte("wrong password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	// Output:
+	// the password is valid
+	// the password is invalid
+}
+
+// This example shows how to use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+// Note that this preset requires more memory than the default parameters.
+func Example_hashcustom_firstrecommended() {
+	// Your strong and unpredictable password
+	password := []byte("my password")
+
+	// Use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+	params := argonize.RFC9106FirstRecommended
+
+	// Generate a salt with the preset's salt length.
+	salt, err := argonize.NewSalt(params.SaltLength)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Hash using the preset parameters.
+	hashedObj := argonize.HashCustom(password, salt, params)
+
+	// Validate the password against the hashed password.
+	if hashedObj.IsValidPassword([]byte("my password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	if hashedObj.IsValidPassword([]byte("wrong password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	// Output:
+	// the password is valid
+	// the password is invalid
+}
+
+// This example shows how to tweak parameters starting from defaults and use
+// `argonize.HashCustom` with user-defined `Params`.
+func Example_custom_user_defined_params() {
+	// Your strong and unpredictable password
+	password := []byte("my password")
+
+	// Start from defaults and tweak values for this example.
+	params := argonize.NewParams()
+	params.Iterations = 2
+	params.KeyLength = 32
+	params.MemoryCost = 32 * 1024 // 32 MiB in KiB
+	params.SaltLength = 16
+	params.Parallelism = 2
+
+	salt, err := argonize.NewSalt(params.SaltLength)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hashedObj := argonize.HashCustom(password, salt, params)
+
+	if hashedObj.IsValidPassword([]byte("my password")) {
+		fmt.Println("the password is valid")
+	} else {
+		fmt.Println("the password is invalid")
+	}
+
+	if hashedObj.IsValidPassword([]byte("wrong password")) {
 		fmt.Println("the password is valid")
 	} else {
 		fmt.Println("the password is invalid")
@@ -189,8 +263,8 @@ func Example_static_output() {
 	fmt.Println("String:", hashedObj.String())
 	fmt.Printf("Hashed: %x\n", hashedObj.Hash)
 	// Output:
-	// String: $argon2id$v=19$m=65536,t=1,p=2$MDEyMzQ1Njc4OWFiY2RlZg$ytVHh/XAyQmzALFYvBRKET/7GswiVnDdubchuBeU/Yw
-	// Hashed: cad54787f5c0c909b300b158bc144a113ffb1acc225670ddb9b721b81794fd8c
+	// String: $argon2id$v=19$m=65536,t=3,p=4$MDEyMzQ1Njc4OWFiY2RlZg$DGSsb/y+38VbtrsbfVuD8xEgSNq4EL6/C0h7nEAqMTs
+	// Hashed: 0c64ac6ffcbedfc55bb6bb1b7d5b83f3112048dab810bebf0b487b9c402a313b
 }
 
 // ----------------------------------------------------------------------------
@@ -248,11 +322,11 @@ func ExampleNewParams() {
 	fmt.Println("Default parallelism:", params.Parallelism)
 
 	// Output:
-	// Default iterations: 1
+	// Default iterations: 3
 	// Default key length: 32
 	// Default memory cost: 65536
 	// Default salt length: 16
-	// Default parallelism: 2
+	// Default parallelism: 4
 }
 
 // ----------------------------------------------------------------------------

@@ -34,6 +34,38 @@ import (
 var RandRead = rand.Read
 
 // ============================================================================
+//  Constants
+// ============================================================================
+// Extracted to avoid magic-number linter warnings and to document intent.
+
+const (
+	// Maximum value for int32 to avoid overflow.
+	maxInt32 = 2147483647
+	// Number of chunks in the encoded hash string.
+	lenDecChunks = 6
+)
+
+// FIRST RECOMMENDED (RFC 9106) parameter presets.
+// Less iteration but more memory.
+const (
+	RFCFirstIterations  = 1
+	RFCFirstKeyLength   = 32
+	RFCFirstMemoryKiB   = 2 * 1024 * 1024 // 2 GiB in KiB
+	RFCFirstSaltLength  = 16
+	RFCFirstParallelism = 4
+)
+
+// SECOND RECOMMENDED (RFC 9106) parameter presets.
+// Default. More iteration but less memory.
+const (
+	RFCSecondIterations  = 3
+	RFCSecondKeyLength   = 32
+	RFCSecondMemoryKiB   = 64 * 1024 // 64 MiB in KiB
+	RFCSecondSaltLength  = 16
+	RFCSecondParallelism = 4
+)
+
+// ============================================================================
 //  Functions
 // ============================================================================
 
@@ -82,9 +114,9 @@ func HashCustom(password []byte, salt []byte, parameters *Params) *Hashed {
 }
 
 // RandomBytes returns a random number of byte slice with the given length.
+//
 // It is a cryptographically secure random number generated from `crypto.rand`
 // package.
-//
 // If it is determined that a cryptographically secure number cannot be generated,
 // an error is returned. Also note that if lenOut is zero, an empty byte slice
 // is returned with no error.
@@ -113,11 +145,6 @@ type Hashed struct {
 // ----------------------------------------------------------------------------
 //  Constructors of Hashed
 // ----------------------------------------------------------------------------
-
-const (
-	maxInt32     = 2147483647
-	lenDecChunks = 6 // Number of chunks in the encoded hash string.
-)
 
 // DecodeHashStr decodes an Argon2id formatted hash string into a Hashed object.
 // Which is the value returned by Hashed.String() method.
@@ -170,18 +197,19 @@ func DecodeHashStr(encodedHash string) (*Hashed, error) {
 		minLenHash = 4
 	)
 
-	if lenSalt < maxInt32 && lenHash < maxInt32 && lenSalt >= minLenSalt {
-		params.SaltLength = uint32(lenSalt) //nolint:gosec // int overflow is checked above
-		params.KeyLength = uint32(lenHash)  //nolint:gosec // int overflow is checked above
-
-		return &Hashed{
-			Params: params,
-			Salt:   Salt(salt),
-			Hash:   hash,
-		}, nil
+	// Check for integer overflow and minimum length (gosec)
+	if lenSalt > maxInt32 || lenHash > maxInt32 || lenSalt < minLenSalt {
+		return nil, errors.New("hash or salt length is too long or too short")
 	}
 
-	return nil, errors.New("hash or salt length is too long or too short")
+	params.SaltLength = uint32(lenSalt)
+	params.KeyLength = uint32(lenHash)
+
+	return &Hashed{
+		Params: params,
+		Salt:   Salt(salt),
+		Hash:   hash,
+	}, nil
 }
 
 // DecodeHashGob decodes gob-encoded byte slice into a Hashed object.
@@ -275,36 +303,77 @@ func (h *Hashed) String() string {
 // Params holds the parameters for the Argon2id algorithm.
 type Params struct {
 	// Iterations is the number of iterations or passes over the memory.
-	// Defaults to 1 which is the sensible number from the Argon2's draft RFC
-	// recommends[2].
+	// Default is 3 to follow RFC 9106 SECOND RECOMMENDED (t=3).
 	Iterations uint32
 	// KeyLength is the length of the key used in Argon2.
 	// Defaults to 32.
 	KeyLength uint32
 	// MemoryCost is the amount of memory used by the algorithm in KiB.
-	// Defaults to 64 * 1024 KiB = 64 MiB. Which is the sensible number from
-	// the Argon2's draft RFC recommends[2].
+	// Default is 64 MiB = 64 * 1024 KiB to follow RFC 9106 SECOND RECOMMENDED (m=64 MiB).
 	MemoryCost uint32
 	// SaltLength is the length of the salt used in Argon2.
 	// Defaults to 16.
 	SaltLength uint32
 	// Parallelism is the number of threads or lanes used by the algorithm.
-	// Defaults to 2.
+	// Default is 4 to follow RFC 9106 SECOND RECOMMENDED (p=4).
 	Parallelism uint8
 }
 
-const (
-	// IterationsDefault is the default number of iterations of the parameter used by the Argon2id algorithm.
-	IterationsDefault = uint32(1)
-	// KeyLengthDefault is the default key length used in the Argon2id algorithm parameters.
-	KeyLengthDefault = uint32(32)
-	// MemoryCostDefault is the default amount of memory (KiB) used by the algorithm parameters.
-	MemoryCostDefault = uint32(64 * 1024)
-	// ParallelismDefault is the default number of threads used in the algorithm parameters.
-	ParallelismDefault = uint8(2)
-	// SaltLengthDefault is the default length of the salt used in the Argon2id algorithm parameters.
-	SaltLengthDefault = uint32(16)
-)
+// ----------------------------------------------------------------------------
+//  Presets (RFC 9106)
+// ----------------------------------------------------------------------------
+
+// RFC9106SecondRecommended contains a preset Params configured to follow
+// the RFC 9106 "SECOND RECOMMENDED" settings for Argon2id.
+//
+// This preset is the default configuration.
+//
+// Fields:
+//   - Iterations:  number of passes over the memory (t). Default: 3.
+//   - KeyLength:   output tag length in bytes (key length). Default: 32 bytes (256 bits).
+//   - MemoryCost:  memory size in KiB (m). Default: 64 MiB = 64 * 1024 KiB.
+//   - SaltLength:  salt length in bytes. Default: 16 bytes (128 bits).
+//   - Parallelism: number of lanes/threads (p). Default: 4.
+//
+// RFC9106SecondRecommended contains a preset Params configured to follow
+// the RFC 9106 "SECOND RECOMMENDED" settings for Argon2id.
+//
+// The variable is exported on purpose to provide a reusable preset. Disable
+// the gochecknoglobals linter for this intentional global.
+//
+//nolint:gochecknoglobals // exported preset is intentional
+var RFC9106SecondRecommended = &Params{
+	Iterations:  RFCSecondIterations,
+	KeyLength:   RFCSecondKeyLength,
+	MemoryCost:  RFCSecondMemoryKiB,
+	SaltLength:  RFCSecondSaltLength,
+	Parallelism: RFCSecondParallelism,
+}
+
+// RFC9106FirstRecommended contains a preset Params configured to follow
+// the RFC 9106 "FIRST RECOMMENDED" settings for Argon2id.
+//
+// Per RFC 9106 Section 4 the FIRST RECOMMENDED option is:
+//   - t = 1 (passes)
+//   - p = 4 (lanes / parallelism)
+//   - m = 2^21 kibibytes = 2 GiB = 2 * 1024 * 1024 KiB = 2,097,152 KiB
+//   - salt length = 128 bits (16 bytes)
+//   - tag/key length = 256 bits (32 bytes)
+//
+// RFC9106FirstRecommended contains a preset Params configured to follow
+// the RFC 9106 "FIRST RECOMMENDED" settings for Argon2id.
+//
+// The variable is exported on purpose to provide a reusable preset. Disable
+// the gochecknoglobals linter for this intentional global.
+//
+//nolint:gochecknoglobals // exported preset is intentional
+var RFC9106FirstRecommended = &Params{
+	Iterations:  RFCFirstIterations,
+	KeyLength:   RFCFirstKeyLength,
+	MemoryCost:  RFCFirstMemoryKiB, // 2 GiB in KiB
+	SaltLength:  RFCFirstSaltLength,
+	Parallelism: RFCFirstParallelism,
+}
 
 // ----------------------------------------------------------------------------
 //  Constructor of Params
@@ -325,11 +394,12 @@ func NewParams() *Params {
 
 // SetDefault sets the fields to default values.
 func (p *Params) SetDefault() {
-	p.Iterations = IterationsDefault
-	p.KeyLength = KeyLengthDefault
-	p.MemoryCost = MemoryCostDefault
-	p.SaltLength = SaltLengthDefault
-	p.Parallelism = ParallelismDefault
+	// Set defaults from the RFC9106 second recommended preset.
+	p.Iterations = RFC9106SecondRecommended.Iterations
+	p.KeyLength = RFC9106SecondRecommended.KeyLength
+	p.MemoryCost = RFC9106SecondRecommended.MemoryCost
+	p.SaltLength = RFC9106SecondRecommended.SaltLength
+	p.Parallelism = RFC9106SecondRecommended.Parallelism
 }
 
 // ============================================================================
@@ -345,6 +415,8 @@ type Salt []byte
 // ----------------------------------------------------------------------------
 
 // NewSalt returns a new Salt object with a random salt and given length.
+//
+// Note that if lenOut is zero, an empty byte slice is returned with no error.
 func NewSalt(lenOut uint32) (Salt, error) {
 	salt, err := RandomBytes(lenOut)
 	if err != nil {
