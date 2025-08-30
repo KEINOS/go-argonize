@@ -5,6 +5,8 @@
 
 **Go package to facilitate the use of the [Argon2id](https://www.password-hashing.net/)** password hashing algorithm from the ["crypto/argon2" package](https://pkg.go.dev/golang.org/x/crypto/argon2). This package is tested compatibilities with PHP, Python and C implementations.
 
+## Usage
+
 ```sh
 # Install the module
 go get "github.com/KEINOS/go-argonize"
@@ -46,7 +48,7 @@ func Example_basic() {
     }
 
     // Output:
-    // Passwd to save: $argon2id$v=19$m=65536,t=1,p=2$ek6ZYdlRm2D5AsGV98TWKA$QAIDZEdIgwohrNX678mHc448LOmD7jGR4BGw/9YMMVU
+    // Passwd to save: $argon2id$v=19$m=65536,t=3,p=4$ek6ZYdlRm2D5AsGV98TWKA$QAIDZEdIgwohrNX678mHc448LOmD7jGR4BGw/9YMMVU
     // the password is valid
     // the password is invalid
 }
@@ -84,6 +86,10 @@ func Example_from_saved_password() {
 ```
 
 - [View more examples and advanced usages](https://pkg.go.dev/github.com/KEINOS/go-argonize#pkg-examples) @ pkg.go.dev
+
+## Defaults
+
+Since v1.6.0, the library defaults use the RFC 9106 SECOND RECOMMENDED parameters (Argon2id, t=3, m=64 MiB, p=4, salt=16 bytes, key=32 bytes). (see issue [#69](https://github.com/KEINOS/go-argonize/issues/69)).
 
 ## Contributing
 
