@@ -29,12 +29,12 @@ func Example_basic() {
     // Your strong and unpredictable password
     password := []byte("my password")
 
-    // Password-hash your password. By default it uses RFC 9106 SECOND RECOMMENDED
-    // parameters.
+    // Password-hash your password.
     //
-    // Note that even the same password `Hash` will produce different hashes due
-    // to the cryptographically random SALT is used. If you need a static output,
-    // use HashCustom.
+    // By default it uses RFC 9106 SECOND RECOMMENDED parameters with
+    // cryptographically random SALT.
+    // The `Hash` function will produce different hashes. If you need
+    // a static output, use `HashCustom` function with a fixed salt.
     hashedObj, err := argonize.Hash(password)
     if err != nil {
         log.Fatal(err)
@@ -69,8 +69,8 @@ func Example_basic() {
 ```go
 func Example_from_saved_password() {
     // Load the hashed password from a file, DB or etc.
-    // Note that once hashed, passwords cannot be recovered and can only be
-    // used to verify.
+    // Note that once hashed, passwords cannot be recovered from it and can only
+    // be used to verify.
     savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
 
     // Decode the saved password to an `argonize.Hashed` object.
