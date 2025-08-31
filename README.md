@@ -29,8 +29,12 @@ func Example_basic() {
     // Your strong and unpredictable password
     password := []byte("my password")
 
-    // Password hash your password.
-    // By default it uses RFC 9106 SECOND RECOMMENDED parameters.
+    // Password-hash your password. By default it uses RFC 9106 SECOND RECOMMENDED
+    // parameters.
+    //
+    // Note that even the same password `Hash` will produce different hashes due
+    // to the cryptographically random SALT is used. If you need a static output,
+    // use HashCustom.
     hashedObj, err := argonize.Hash(password)
     if err != nil {
         log.Fatal(err)
@@ -52,7 +56,7 @@ func Example_basic() {
     } else {
         fmt.Println("the password is invalid")
     }
-
+    //
     // Output:
     // Passwd to save: $argon2id$v=19$m=65536,t=3,p=4$ek6ZYdlRm2D5AsGV98TWKA$QAIDZEdIgwohrNX678mHc448LOmD7jGR4BGw/9YMMVU
     // the password is valid
@@ -64,76 +68,81 @@ func Example_basic() {
 
 ```go
 func Example_from_saved_password() {
-  // Load the hashed password from a file, DB or etc.
-  // Note that once hashed, passwords cannot be recovered and can only be
-  // used to verify.
-  savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
+    // Load the hashed password from a file, DB or etc.
+    // Note that once hashed, passwords cannot be recovered and can only be
+    // used to verify.
+    savedPasswd := "$argon2id$v=19$m=65536,t=1,p=2$iuIIXq4foOhcGUH1BjE08w$kA+XOAMls8hzWg3J1sYxkeuK/lkU4HDRBf0zchdyllY"
 
-  // Decode the saved password to an `argonize.Hashed` object.
-  hashObj, err := argonize.DecodeHashStr(savedPasswd)
-  if err != nil {
-    log.Fatal(err)
-  }
+    // Decode the saved password to an `argonize.Hashed` object.
+    hashObj, err := argonize.DecodeHashStr(savedPasswd)
+    if err != nil {
+      log.Fatal(err)
+    }
 
-  // Validate the password against the hashed password.
-  if hashObj.IsValidPassword([]byte("my password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
+    // Validate the password against the hashed password.
+    if hashObj.IsValidPassword([]byte("my password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
 
-  if hashObj.IsValidPassword([]byte("wrong password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
-  // Output:
-  // the password is valid
-  // the password is invalid
+    if hashObj.IsValidPassword([]byte("wrong password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
+    //
+    // Output:
+    // the password is valid
+    // the password is invalid
 }
 ```
 
 ### Example to use RFC 9106 FIRST RECOMMENDED preset
 
-By default, the library uses the RFC 9106 SECOND RECOMMENDED parameters.
+By default, the library uses the RFC 9106 SECOND RECOMMENDED parameters (`argonize.RFC9106SecondRecommended` preset).
 
 This example uses the RFC 9106 FIRST RECOMMENDED preset for hashing. Which uses less iteration but requires more memory.
 
 ```go
 func Example_hashcustom_firstrecommended() {
-  // Your strong and unpredictable password
-  password := []byte("my password")
+    // Your strong and unpredictable password
+    password := []byte("my password")
 
-  // Generate a salt with the preset's salt length.
-  salt, err := argonize.NewSalt(params.SaltLength)
-  if err != nil {
-    log.Fatal(err)
-  }
+    // Use the RFC 9106 FIRST RECOMMENDED preset for hashing.
+    // Note that this preset requires more memory than the default
+    // parameters.
+    params := argonize.RFC9106FirstRecommended
 
-  // Use the RFC 9106 FIRST RECOMMENDED preset for hashing.
-  // Note that this preset requires more memory than the default
-  // parameters.
-  params := argonize.RFC9106FirstRecommended
+    // Generate a salt with the preset's salt length.
+    //
+    // HashCustom requires a random salt to prevent rainbow table attacks and to
+    // ensure that users with the same password cannot be distinguished.
+    // For consistency during testing, use a fixed salt value.
+    salt, err := argonize.NewSalt(params.SaltLength)
+    if err != nil {
+      log.Fatal(err)
+    }
 
-  // Hash using the preset parameters.
-  hashedObj := argonize.HashCustom(password, salt, params)
+    // Hash using the preset parameters.
+    hashedObj := argonize.HashCustom(password, salt, params)
 
-  // Validate the password against the hashed password.
-  if hashedObj.IsValidPassword([]byte("my password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
+    // Validate the password against the hashed password.
+    if hashedObj.IsValidPassword([]byte("my password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
 
-  if hashedObj.IsValidPassword([]byte("wrong password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
-
-  // Output:
-  // the password is valid
-  // the password is invalid
+    if hashedObj.IsValidPassword([]byte("wrong password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
+    //
+    // Output:
+    // the password is valid
+    // the password is invalid
 }
 ```
 
@@ -144,38 +153,40 @@ This example shows how to tweak parameters starting from defaults and use
 
 ```go
 func Example_custom_user_defined_params() {
-  password := []byte("my password")
+    password := []byte("my password")
 
-  // Start from defaults and tweak values for this example.
-  params := argonize.NewParams()
-  params.Iterations = 2
-  params.KeyLength = 32
-  params.MemoryCost = 32 * 1024 // 32 MiB in KiB
-  params.SaltLength = 16
-  params.Parallelism = 2
+    // Start from defaults and tweak values for this example.
+    params := argonize.NewParams()
+    params.Iterations = 2
+    params.KeyLength = 32
+    params.MemoryCost = 32 * 1024 // 32 MiB in KiB
+    params.SaltLength = 16
+    params.Parallelism = 2
 
-  salt, err := argonize.NewSalt(params.SaltLength)
-  if err != nil {
-    log.Fatal(err)
-  }
+    // HashCustom requires a random salt to prevent rainbow table attacks and to
+    // ensure that users with the same password cannot be distinguished.
+    salt, err := argonize.NewSalt(params.SaltLength)
+    if err != nil {
+      log.Fatal(err)
+    }
 
-  hashedObj := argonize.HashCustom(password, salt, params)
+    hashedObj := argonize.HashCustom(password, salt, params)
 
-  if hashedObj.IsValidPassword([]byte("my password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
+    if hashedObj.IsValidPassword([]byte("my password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
 
-  if hashedObj.IsValidPassword([]byte("wrong password")) {
-    fmt.Println("the password is valid")
-  } else {
-    fmt.Println("the password is invalid")
-  }
-
-  // Output:
-  // the password is valid
-  // the password is invalid
+    if hashedObj.IsValidPassword([]byte("wrong password")) {
+      fmt.Println("the password is valid")
+    } else {
+      fmt.Println("the password is invalid")
+    }
+    //
+    // Output:
+    // the password is valid
+    // the password is invalid
 }
 ```
 
