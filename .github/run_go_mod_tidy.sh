@@ -13,7 +13,7 @@
 
 set -eu
 
-min_go_version="1.23.0"
+min_go_version="1.24.0"
 
 echo '* Backup modules ...'
 cp -f go.mod go.mod.bak
