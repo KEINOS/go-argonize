@@ -1,8 +1,8 @@
 # =============================================================================
-#  Test Container for Vaious Go Versions (Last Updated: 2022-08-05)
+#  Test Container for Vaious Go Versions (Last Updated: 2026-03-23)
 # =============================================================================
 # Default version: minimum supported go version
-ARG VARIANT="1.24-alpine"
+ARG VARIANT="1.25-alpine"
 
 # -----------------------------------------------------------------------------
 #  Main Stage

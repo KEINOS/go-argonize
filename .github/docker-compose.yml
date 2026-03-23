@@ -1,7 +1,7 @@
 # =============================================================================
-# Docker Compose file for testing on Go versions 1.22 to the latest.
+# Docker Compose file for testing on various Go versions
 # =============================================================================
-# It is recommended to run specifying a specific Go version and not at once.
+# DO NOT run all the services at once with "up" command.
 #
 # Since the service `tidy` will update/re-write the "go.mod" file to the latest
 # version, during it's process the "go.mod" file will be gone temporarily. Thus,
