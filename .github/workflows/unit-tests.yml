@@ -3,27 +3,23 @@
 #
 # This workflow caches images built with Docker and docker-compose to speed up its execution.
 name: UnitTests
-
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-
+    branches: [main]
 env:
   PATH_CACHE: /tmp/docker-img-arch
-
 jobs:
   go:
     name: Run tests on Go via container
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v6
       - name: Create image tag from file hash
-        uses: KEINOS/gh-action-hash-for-cache@main
+        uses: KEINOS/gh-action-hash-for-cache@v1.3.0
         id: imagetag
         # Udate the hash if Dockerfile/go.mod is changed or the month has changed.
         with:
@@ -33,14 +29,12 @@ jobs:
             ./.github/docker-compose.yml
             ./.github/workflows/unit-tests.yml
           variant: $(TZ=UTC-9 date '+%Y%m')
-
       - name: Enable Cache
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5.0.5
         with:
           path: ${{ env.PATH_CACHE }}
           key: ${{ steps.imagetag.outputs.hash }}
-
       - name: Load cached Docker images if any
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
@@ -49,18 +43,15 @@ jobs:
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar
           docker load --input ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-clang_1.tar
-
       - name: Pull base images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           # Pull the base images for stability
           docker compose --file ./.github/docker-compose.yml pull
-
       - name: Build Docker images if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           docker compose --file ./.github/docker-compose.yml build
-
       - name: Save/export built images to cache dir if no-cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -70,7 +61,6 @@ jobs:
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-php_1.tar github-php:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-python_1.tar github-python:latest
           docker save --output ${{ env.PATH_CACHE }}/${{ steps.imagetag.outputs.hash }}/github-clang_1.tar github-clang:latest
-
       - name: Run tests on minimum supported Go version
         run: docker compose --file ./.github/docker-compose.yml run min
       - name: Run tests on latest Go

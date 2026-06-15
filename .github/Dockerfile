@@ -16,4 +16,4 @@ RUN apk add --no-cache \
 
 WORKDIR /workspaces
 
-ENTRYPOINT go mod download && go test -race ./...
+ENTRYPOINT ["sh", "-c", "go mod download && go test -race ./..."]
